@@ -1,0 +1,118 @@
+name: Bug Report
+description: Template pour signaler un bug ou dysfonctionnement
+title: "[BUG] "
+labels: ["bug"]
+assignees: []
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: 🐛 Description du bug
+      description: Décrivez clairement et de manière concise le bug rencontré
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: 💥 Impact
+      description: Décrivez l'impact du bug sur le système ou les utilisateurs
+      value: |
+        - **Sévérité** : <!-- Critique / Majeur / Mineur / Cosmétique -->
+        - **Périmètre affecté** : <!-- Quelle partie du système est impactée -->
+        - **Nombre d'utilisateurs impactés** : <!-- Tous / Quelques-uns / Cas isolé -->
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 🔄 Étapes pour reproduire
+      description: Listez les étapes précises pour reproduire le bug
+      value: |
+        1. Aller à '...'
+        2. Cliquer sur '...'
+        3. Faire défiler jusqu'à '...'
+        4. Observer l'erreur
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: ✔️ Comportement attendu
+      description: Décrivez ce qui devrait se passer normalement
+
+  - type: textarea
+    id: observed
+    attributes:
+      label: ❌ Comportement observé
+      description: Décrivez ce qui se passe réellement
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: 📸 Captures d'écran
+      description: Si applicable, ajoutez des captures d'écran pour illustrer le problème
+      placeholder: Glissez-déposez vos captures ici...
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: 🖥️ Environnement
+      description: Complétez les informations sur l'environnement où le bug a été observé
+      value: |
+        - **OS** : <!-- Ex: Ubuntu 20.04, Windows 11, macOS 12.0 -->
+        - **Python version** : <!-- Ex: 3.9.7 -->
+        - **Version du projet** : <!-- Ex: commit hash, tag, branche -->
+        - **Navigateur** (si applicable) : <!-- Ex: Chrome 96, Firefox 95 -->
+        - **Environnement** : <!-- Dev / Staging / Production / Local -->
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 📋 Logs et traces
+      description: Collez les logs pertinents, messages d'erreur, stack traces
+      render: shell
+      placeholder: Collez ici...
+
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: 🔍 Informations supplémentaires
+      description: Ajoutez tout contexte supplémentaire utile pour comprendre ou résoudre le bug
+
+  - type: textarea
+    id: validation
+    attributes:
+      label: 🎯 Validation (Section obligatoire)
+      description: Décrivez explicitement comment la résolution du bug sera validée
+      value: |
+        ### Méthode de validation :
+        - [ ] Tests de non-régression (préciser lesquels)
+        - [ ] Re-test des étapes de reproduction (vérifier que le bug ne se reproduit plus)
+        - [ ] Vérification des logs corrigés (plus d'erreurs dans les logs)
+        - [ ] Tests unitaires ajoutés pour prévenir la régression
+        - [ ] Tests d'intégration mis à jour
+        - [ ] Validation en environnement de staging
+        - [ ] Validation en environnement de production
+
+        ### Checklist de validation :
+        <!-- Ajoutez des points de contrôle spécifiques pour ce bug -->
+        - [ ] Le comportement attendu est restauré
+        - [ ] Aucune régression introduite dans les fonctionnalités connexes
+        - [ ] Les logs ne contiennent plus d'erreurs liées au bug
+        - [ ] Documentation mise à jour si nécessaire
+
+        ### Critères de résolution :
+        <!-- Définissez précisément quand le bug sera considéré comme résolu -->
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: 💡 Solution proposée (Optionnel)
+      description: Si vous avez une idée de solution, décrivez-la ici
+      value: |
+        ### Fichiers potentiellement concernés :
+        <!-- Ex: lambda_function.py, pdf/detection.py, etc. -->
+
+        ### Approche de correction suggérée :
+        <!-- Décrivez une approche technique préliminaire -->

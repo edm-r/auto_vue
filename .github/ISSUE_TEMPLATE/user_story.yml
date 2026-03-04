@@ -1,0 +1,87 @@
+name: User Story
+description: Template pour documenter une nouvelle fonctionnalité ou amélioration
+title: "[USER STORY] "
+labels: ["enhancement", "user-story"]
+assignees: []
+body:
+  - type: textarea
+    id: user-story
+    attributes:
+      label: 📖 User Story
+      description: Résumez le besoin
+      value: |
+        **En tant que** [type d'utilisateur]
+        **Je veux** [objectif/besoin]
+        **Afin de** [bénéfice/valeur ajoutée]
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 📋 Description détaillée
+      description: Décrivez de manière détaillée le contexte et les besoins
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: ✅ Critères d'acceptation
+      description: Listez les critères mesurables qui définissent quand cette story est considérée comme terminée
+      value: |
+        - [ ] Critère 1
+        - [ ] Critère 2
+        - [ ] Critère 3
+    validations:
+      required: true
+
+  - type: textarea
+    id: validation
+    attributes:
+      label: 🎯 Validation (Section obligatoire)
+      description: Décrivez explicitement comment la solution proposée sera validée
+      value: |
+        ### Méthode de validation :
+        - [ ] Tests unitaires (préciser lesquels)
+        - [ ] Tests d'intégration (préciser le périmètre)
+        - [ ] Tests fonctionnels/E2E (préciser les scénarios)
+        - [ ] Démo fonctionnelle (préciser avec qui)
+        - [ ] Critères métiers vérifiés (préciser lesquels)
+
+        ### Checklist de validation :
+        <!-- Ajoutez des points de contrôle spécifiques pour cette story -->
+        - [ ]
+        - [ ]
+
+        ### Environnement de validation :
+        <!-- Précisez où la validation sera effectuée (dev, staging, production, etc.) -->
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: 💡 Suggestions d'implémentation (Optionnel)
+      description: Cette section peut être utilisée par l'IA pour proposer des approches techniques
+      value: |
+        ### Composants concernés :
+        <!-- Ex: Backend Django, Frontend React, API, Base de données, etc. -->
+
+        ### Approche technique suggérée :
+        <!-- Décrivez une approche technique préliminaire si connue -->
+
+        ### Dépendances identifiées :
+        <!-- Autres issues, bibliothèques, services externes, etc. -->
+
+  - type: textarea
+    id: resources
+    attributes:
+      label: 📎 Ressources additionnelles
+      description: Liens vers documentation, maquettes, specs, etc.
+
+  - type: input
+    id: suggested-labels
+    attributes:
+      label: 🏷️ Étiquettes suggérées
+      description: "Suggestion de labels (ex: backend, frontend, api, database, urgent, etc.)"

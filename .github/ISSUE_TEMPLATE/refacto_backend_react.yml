@@ -1,0 +1,148 @@
+name: Refactoring / Dette Technique
+description: Template pour documenter du refactoring ou de la dette technique (Backend Django, React, Python)
+title: "[REFACTO] "
+labels: ["refactoring", "tech-debt"]
+assignees: []
+body:
+  - type: checkboxes
+    id: refacto-type
+    attributes:
+      label: 🔧 Type de refactoring
+      description: Cochez le(s) type(s) concerné(s)
+      options:
+        - label: Backend Python/Django
+        - label: Frontend React/JavaScript
+        - label: Infrastructure/DevOps
+        - label: Tests et qualité
+        - label: Documentation
+        - label: Performance
+        - label: Sécurité
+        - label: Autre
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 📝 Description du refactoring ou de la dette technique
+      description: Décrivez clairement ce qui doit être refactorisé ou quelle dette technique doit être adressée
+      placeholder: Description détaillée...
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: 🎯 Motivation et bénéfices
+      description: Expliquez pourquoi ce refactoring est nécessaire et quels bénéfices il apportera
+      value: |
+        ### Problèmes actuels :
+        <!-- Listez les problèmes, limitations ou risques liés au code actuel -->
+        -
+
+        ### Bénéfices attendus :
+        <!-- Listez les améliorations attendues après le refactoring -->
+        -
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: 📍 Périmètre et composants concernés
+      description: Listez les fichiers, modules, composants ou services qui seront modifiés
+      value: |
+        ### Backend :
+        <!-- Ex: lambda_function.py, pdf/detection.py, config.py, etc. -->
+        -
+
+        ### Frontend :
+        <!-- Ex: composants React, hooks, services, etc. -->
+        -
+
+        ### Infrastructure :
+        <!-- Ex: Dockerfile, docker-compose.yml, scripts de déploiement, etc. -->
+        -
+
+        ### Tests :
+        <!-- Ex: tests/test_*.py, etc. -->
+        -
+
+  - type: textarea
+    id: complexity
+    attributes:
+      label: 📊 Analyse de complexité
+      description: Estimez la complexité et l'effort requis
+      value: |
+        - **Complexité estimée** : <!-- Faible / Moyenne / Élevée -->
+        - **Effort estimé** : <!-- En heures ou en story points -->
+        - **Risque de régression** : <!-- Faible / Moyen / Élevé -->
+
+  - type: textarea
+    id: validation
+    attributes:
+      label: 🎯 Validation (Section obligatoire)
+      description: Décrivez explicitement comment la dette sera considérée comme soldée
+      value: |
+        ### Méthode de validation :
+        - [ ] Code review approfondie (préciser les critères)
+        - [ ] Tests unitaires ajoutés/mis à jour (préciser la couverture cible)
+        - [ ] Tests d'intégration ajoutés/mis à jour
+        - [ ] Couverture de code augmentée (préciser le % cible : ___%)
+        - [ ] Benchmarks de performance (préciser les métriques : _____________)
+        - [ ] Analyse statique du code (linters, type checkers)
+        - [ ] Documentation technique mise à jour
+        - [ ] Tests de non-régression passent avec succès
+
+        ### Checklist de validation :
+        <!-- Ajoutez des points de contrôle spécifiques pour ce refactoring -->
+        - [ ] Le code refactorisé respecte les conventions du projet
+        - [ ] Aucune régression fonctionnelle introduite
+        - [ ] Les performances sont maintenues ou améliorées
+        - [ ] La complexité cyclomatique est réduite (si applicable)
+        - [ ] Le code est plus maintenable et lisible
+        - [ ] La documentation est à jour
+
+        ### Critères de succès :
+        <!-- Définissez des critères mesurables pour considérer la dette comme soldée -->
+        1.
+        2.
+
+        ### Tests de non-régression :
+        <!-- Listez les tests spécifiques à exécuter pour garantir qu'il n'y a pas de régression -->
+        ```bash
+        # Commandes de test à exécuter
+        pytest tests/
+        # Ajoutez d'autres commandes si nécessaire
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: technical-approach
+    attributes:
+      label: 💡 Approche technique suggérée
+      description: Proposez une approche pour réaliser le refactoring
+      value: |
+        ### Plan d'implémentation :
+        <!-- Décrivez les étapes principales du refactoring -->
+        1.
+        2.
+
+        ### Alternatives considérées :
+        <!-- Décrivez d'autres approches envisagées et pourquoi elles ont été écartées -->
+
+        ### Impacts et dépendances :
+        <!-- Listez les impacts sur d'autres parties du système et les dépendances -->
+        -
+
+  - type: textarea
+    id: resources
+    attributes:
+      label: 📎 Ressources et références
+      description: Liens vers documentation, articles, exemples de code, PRs similaires, etc.
+      placeholder: Listez les ressources ici...
+
+  - type: textarea
+    id: context
+    attributes:
+      label: 🏷️ Contexte additionnel
+      description: Ajoutez tout autre contexte pertinent

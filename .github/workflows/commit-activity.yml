@@ -1,0 +1,191 @@
+name: 📊 Commit Activity & New Tests Report (React)
+
+on:
+  push:
+    branches-ignore: [ "main", "master" ]
+
+permissions:
+  issues: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  analyze-and-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # -----------------------------------------------------------
+      # 1. PRÉPARATION ENVIRONNEMENT (NODE.JS)
+      # -----------------------------------------------------------
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          # cache: 'npm' # Désactivé car package-lock.json n'est pas versionné
+
+      - name: Install Dependencies
+        run: npm install --legacy-peer-deps
+
+      # -----------------------------------------------------------
+      # 2. ANALYSE GIT (Modifiés vs Créés)
+      # -----------------------------------------------------------
+      - name: 🔍 Git Analysis
+        id: git_analysis
+        run: |
+          git fetch origin dev || true
+
+          # Comparaison par rapport à la branche dev
+          BASE_BRANCH="origin/dev"
+
+          # Fichiers MODIFIÉS (M)
+          MODIFIED=$(git diff --name-only --diff-filter=M $BASE_BRANCH...HEAD || echo "")
+          # Fichiers CRÉÉS (A)
+          CREATED=$(git diff --name-only --diff-filter=A $BASE_BRANCH...HEAD || echo "")
+
+          # Stockage dans ENV pour utilisation ultérieure (multiline support)
+          {
+            echo "MODIFIED_FILES<<END_ENV"
+            echo "$MODIFIED"
+            echo "END_ENV"
+            echo "CREATED_FILES<<END_ENV"
+            echo "$CREATED"
+            echo "END_ENV"
+            echo "BASE_BRANCH=$BASE_BRANCH"
+          } >> $GITHUB_ENV
+
+      # -----------------------------------------------------------
+      # 3. DÉTECTION ET EXÉCUTION DES NOUVEAUX TESTS (REACT/MOCHA)
+      # -----------------------------------------------------------
+      - name: 🧪 Identify & Run New Tests
+        id: run_tests
+        continue-on-error: true
+        env:
+          NODE_ENV: test
+        run: |
+          BASE_BRANCH=${{ env.BASE_BRANCH }}
+
+          # Filtrer les tests créés (.spec.js, .test.js, .test.jsx)
+          # Adaptez le regex selon la structure de vos tests (ex: src/test/**/*.spec.js)
+          NEW_JS_TESTS=$(git diff --name-only --diff-filter=A $BASE_BRANCH...HEAD | grep -E '.*\.spec\.js$|.*\.test\.js$|.*\.test\.jsx$' || echo "")
+
+          echo "Tests JS détectés :"
+          echo "$NEW_JS_TESTS"
+
+          # Exécution Mocha (si tests présents)
+          if [ -n "$NEW_JS_TESTS" ]; then
+             echo "RUNNING_JS=true" >> $GITHUB_ENV
+             
+             # Convertir les sauts de ligne en espaces
+             FILES=$(echo "$NEW_JS_TESTS" | tr '\n' ' ')
+
+             # Exécution avec testSetup.js comme défini dans votre package.json
+             # On utilise le reporter JSON pour le parsing facile ensuite
+             echo "Running: npx mocha testSetup.js $FILES"
+             
+             # Capture de la sortie JSON dans report_js.json
+             # Note: Mocha peut écrire sur stdout, on redirige
+             npx mocha testSetup.js $FILES --reporter json > report_js.json
+          else
+             echo "RUNNING_JS=false" >> $GITHUB_ENV
+          fi
+
+      # -----------------------------------------------------------
+      # 4. GÉNÉRATION DU RAPPORT ET POST SUR LA PR/ISSUE
+      # -----------------------------------------------------------
+      - name: 📝 Post Detailed Report
+        uses: actions/github-script@v7
+        env:
+          MODIFIED_FILES: ${{ env.MODIFIED_FILES }}
+          CREATED_FILES: ${{ env.CREATED_FILES }}
+          RUNNING_JS: ${{ env.RUNNING_JS }}
+        with:
+          script: |
+            const fs = require('fs');
+
+            // 1. Récupération des données d'analyse
+            const modified = process.env.MODIFIED_FILES || '';
+            const created = process.env.CREATED_FILES || '';
+            const ranJs = process.env.RUNNING_JS === 'true';
+
+            let body = `## 📊 Rapport d'activité du Commit (React/Mocha)\n\n`;
+
+            // Section 1: Analyse des fichiers
+            body += `### 📂 Mouvements de fichiers\n`;
+            const modCount = modified.split('\n').filter(x => x.trim()).length;
+            const createCount = created.split('\n').filter(x => x.trim()).length;
+            
+            body += `<details><summary>Fichiers Modifiés (${modCount})</summary>\n\n\`\`\`\n${modified || 'Aucun'}\n\`\`\`\n</details>\n\n`;
+            body += `<details><summary>Fichiers Créés (${createCount})</summary>\n\n\`\`\`\n${created || 'Aucun'}\n\`\`\`\n</details>\n\n`;
+
+            // Section 2: Résultats des tests
+            body += `### 🧪 Exécution des Nouveaux Tests\n`;
+
+            if (ranJs) {
+              try {
+                if (fs.existsSync('report_js.json')) {
+                    const rawData = fs.readFileSync('report_js.json', 'utf8');
+                    const jsReport = JSON.parse(rawData);
+                    
+                    const passes = jsReport.stats.passes;
+                    const failures = jsReport.stats.failures;
+                    const total = jsReport.stats.tests;
+                    
+                    const outcome = failures === 0 ? '✅ SUCCÈS' : ' ❌ ÉCHEC';
+                    
+                    body += `- **React Tests**: ${outcome}\n`;
+                    body += `  - Total: ${total}\n`;
+                    body += `  - Passés: ${passes}\n`;
+                    body += `  - Échoués: ${failures}\n`;
+
+                    if (failures > 0) {
+                        body += `\n**Détail des erreurs :**\n`;
+                        jsReport.failures.forEach(fail => {
+                           body += `- 🔴 **${fail.fullTitle}**: ${fail.err.message}\n`; 
+                        });
+                    }
+                } else {
+                    body += `- **React Tests**: ⚠️ Rapport JSON introuvable.\n`;
+                }
+              } catch (e) {
+                body += `- **React Tests**: ⚠️ Erreur de lecture du rapport: ${e.message}\n`;
+              }
+            } else {
+              body += `- **React Tests**: Aucun nouveau test détecté dans ce commit.\n`;
+            }
+
+            // -----------------------------------------------------------
+            // LOGIQUE D'EXTRACTION DE L'ISSUE VIA LA BRANCHE
+            // -----------------------------------------------------------
+            
+            // context.ref ressemble à "refs/heads/feature/123-login"
+            const fullRef = context.ref;
+            const branchName = fullRef.replace('refs/heads/', '');
+            
+            // On cherche le premier nombre dans le nom de la branche
+            const match = branchName.match(/(\d+)/);
+            const issue_number = match ? parseInt(match[0], 10) : null;
+
+            if (issue_number) {
+                console.log(`Branche détectée : ${branchName}`);
+                console.log(`Tentative de publication sur l'issue #${issue_number}`);
+                
+                try {
+                    await github.rest.issues.createComment({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        issue_number: issue_number,
+                        body: body
+                    });
+                    console.log("✅ Rapport posté sur l'issue avec succès.");
+                } catch (error) {
+                    console.log(`❌ Erreur lors du post (L'issue #${issue_number} existe-t-elle ?) :`, error.message);
+                }
+            } else {
+                console.log(`⚠️ Aucun numéro d'issue trouvé dans le nom de la branche "${branchName}".`);
+                console.log("--- CONTENU DU RAPPORT ---");
+                console.log(body);
+            }

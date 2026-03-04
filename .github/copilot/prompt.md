@@ -1,0 +1,1 @@
+ #1: Toujours utiliser des 'arrow functions' pour les composants React. Règle #2: Le CSS doit être géré avec des modules CSS (import styles from './MonComposant.module.css'), pas de style en ligne.
