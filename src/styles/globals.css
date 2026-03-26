@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Theme tokens (CSS variables) */
+:root {
+  --background: #ffffff;
+  --surface: #f9f9f9;
+  --surface-2: #f4f4f5;
+  --border: #e4e4e7;
+  --text: #09090b;
+  --text-secondary: #52525b;
+  --accent: #e63946;
+  --accent-2: #111827;
+  --success: #22c55e;
+  --danger: #ef4444;
+  --info: #60a5fa;
+}
+
+.dark {
+  --background: #0f0f0f;
+  --surface: #1a1a1a;
+  --surface-2: #1e1e1e;
+  --border: #2e2e2e;
+  --text: #ffffff;
+  --text-secondary: #a1a1aa;
+  --accent: #e63946;
+  --accent-2: #fafafa;
+  --success: #22c55e;
+  --danger: #ff5c7a;
+  --info: #60a5fa;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    background: var(--background);
+    color: var(--text);
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  a {
+    color: var(--accent);
+  }
+}
+
+@layer utilities {
+  .container-p {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 1280px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .surface {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+  }
+}
