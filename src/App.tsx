@@ -8,6 +8,8 @@ import { CategoryPage } from './pages/CategoryPage'
 import { HomePage } from './pages/HomePage'
 import { CartPage } from './pages/CartPage'
 import { CheckoutPage } from './pages/CheckoutPage'
+import { CheckoutSuccessPage } from './pages/CheckoutSuccessPage'
+import { CheckoutCancelPage } from './pages/CheckoutCancelPage'
 import { ProductDetailPage } from './pages/ProductDetailPage'
 import { ProductsPage } from './pages/ProductsPage'
 import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage'
@@ -37,6 +39,22 @@ export default function App() {
           element={
             <PrivateRoute>
               <CheckoutPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/checkout/success"
+          element={
+            <PrivateRoute>
+              <CheckoutSuccessPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/checkout/cancel"
+          element={
+            <PrivateRoute>
+              <CheckoutCancelPage />
             </PrivateRoute>
           }
         />
