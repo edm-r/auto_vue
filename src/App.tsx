@@ -4,6 +4,7 @@ import { PrivateRoute } from './auth/PrivateRoute'
 import { getApiBaseUrl } from './config/apiBaseUrl'
 import { ConfigErrorPage } from './pages/ConfigErrorPage'
 import { DashboardPage } from './pages/DashboardPage'
+import { CategoryPage } from './pages/CategoryPage'
 import { HomePage } from './pages/HomePage'
 import { ProductDetailPage } from './pages/ProductDetailPage'
 import { ProductsPage } from './pages/ProductsPage'
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/products/:id" element={<ProductDetailPage />} />
+        <Route path="/category/:slug" element={<CategoryPage />} />
         <Route
           path="/dashboard"
           element={

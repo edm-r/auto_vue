@@ -624,6 +624,366 @@ a:hover {
   color: var(--muted);
 }
 
+.thumbs {
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  overflow: auto;
+  border-top: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.thumb {
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 0;
+  width: 72px;
+  height: 54px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.thumb.is-active {
+  border-color: rgba(96, 165, 250, 0.55);
+  box-shadow: 0 0 0 4px var(--focus);
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.detail-stock-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 900;
+  width: fit-content;
+}
+
+.detail-stock-badge.is-ok {
+  border-color: rgba(34, 197, 94, 0.35);
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.detail-stock-badge.is-out {
+  border-color: rgba(255, 92, 122, 0.4);
+  background: rgba(255, 92, 122, 0.12);
+}
+
+.qty {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.qty-label {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.qty-input {
+  width: 90px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 10px 10px;
+  outline: none;
+}
+
+.tabs {
+  margin-top: 18px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.tabs-head {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.tab {
+  flex: 1;
+  padding: 12px 10px;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 900;
+}
+
+.tab.is-active {
+  color: var(--text);
+  background: rgba(96, 165, 250, 0.12);
+}
+
+.tabs-body {
+  padding: 12px 12px;
+}
+
+.kv {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.kv li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.kv li span:first-child {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.compat-list {
+  margin: 0;
+  padding-left: 18px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.catalog-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.catalog-search {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  flex: 1;
+}
+
+.catalog-search-input {
+  flex: 1;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 12px 12px;
+  outline: none;
+}
+
+.suggestions {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  border: 1px solid var(--border);
+  background: rgba(10, 16, 30, 0.98);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: rgba(0, 0, 0, 0.45) 0 16px 50px;
+  z-index: 20;
+}
+
+.suggestion-item {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  padding: 10px 12px;
+  cursor: pointer;
+  display: grid;
+  gap: 4px;
+}
+
+.suggestion-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.suggestion-item.is-muted {
+  color: var(--muted);
+  cursor: default;
+}
+
+.suggestion-name {
+  font-weight: 900;
+  letter-spacing: -0.2px;
+}
+
+.suggestion-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.catalog-sort {
+  display: grid;
+  gap: 6px;
+  min-width: 190px;
+}
+
+.catalog-sort-label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.catalog-sort-select {
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 12px 12px;
+  outline: none;
+}
+
+.catalog-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 980px) {
+  .catalog-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sidebar {
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  padding: 12px;
+  height: fit-content;
+}
+
+.sidebar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.sidebar-title {
+  font-weight: 900;
+  letter-spacing: -0.2px;
+}
+
+.sidebar-error {
+  color: rgba(255, 92, 122, 0.95);
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.sidebar-hint {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.sidebar-hint.is-error {
+  color: rgba(255, 92, 122, 0.95);
+}
+
+.filter-block {
+  margin-top: 12px;
+}
+
+.filter-title {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.filter-select,
+.filter-input {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 10px 10px;
+  outline: none;
+}
+
+.filter-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.catalog-content {
+  min-width: 0;
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+}
+
+.pager-info {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.pager-clear {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.product-stock {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-weight: 900;
+}
+
+.product-stock.is-ok {
+  border-color: rgba(34, 197, 94, 0.35);
+  background: rgba(34, 197, 94, 0.12);
+  color: rgba(216, 255, 230, 0.9);
+}
+
+.product-stock.is-out {
+  border-color: rgba(255, 92, 122, 0.4);
+  background: rgba(255, 92, 122, 0.12);
+  color: rgba(255, 213, 221, 0.9);
+}
+
 /* Skeletons */
 
 @keyframes shimmer {

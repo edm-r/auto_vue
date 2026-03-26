@@ -1,5 +1,5 @@
 import { api } from './api'
-import { unwrapResults } from './pagination'
+import { unwrapPage, unwrapResults } from './pagination'
 
 export type Category = {
   id: number
@@ -83,8 +83,33 @@ export async function fetchProducts(params: {
   return unwrapResults<ProductListItem>(res.data)
 }
 
+export async function fetchProductsPage(params: {
+  search?: string
+  category?: string
+  brand?: string
+  compatible_car_models?: string
+  price_min?: string
+  price_max?: string
+  ordering?: string
+  page?: number
+}): Promise<{ items: ProductListItem[]; count: number | null; next: string | null; previous: string | null }> {
+  const res = await api.get('/products/', { params })
+  return unwrapPage<ProductListItem>(res.data)
+}
+
 export async function fetchProduct(productId: string): Promise<ProductDetail> {
   const res = await api.get(`/products/${productId}/`)
   return res.data as ProductDetail
 }
 
+export type ProductSuggestion = {
+  id: number
+  name: string
+  sku?: string
+  price?: string
+}
+
+export async function fetchProductSuggestions(q: string): Promise<ProductSuggestion[]> {
+  const res = await api.get('/products/suggest/', { params: { q } })
+  return Array.isArray(res.data) ? (res.data as ProductSuggestion[]) : []
+}
