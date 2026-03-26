@@ -7,7 +7,7 @@ import { CategoryCard } from '../components/CategoryCard'
 import { HeroBanner } from '../components/HeroBanner'
 import { ProductCard } from '../components/ProductCard'
 import { PromoBanner } from '../components/PromoBanner'
-import { addToCart } from '../cart/cartStorage'
+import { useCart } from '../cart/CartContext'
 import type { Brand, Category, ProductListItem } from '../lib/catalogApi'
 import {
   fetchBrands,
@@ -25,6 +25,7 @@ function normalizeName(value: string) {
 
 export function HomePage() {
   const navigate = useNavigate()
+  const { addProduct } = useCart()
 
   const [toast, setToast] = useState<string | null>(null)
 
@@ -82,7 +83,7 @@ export function HomePage() {
   }, [categories])
 
   function handleAddToCart(p: ProductListItem) {
-    addToCart({ productId: p.id, name: p.name, price: p.price }, 1)
+    void addProduct({ id: p.id, name: p.name, price: p.price }, 1)
     setToast('Produit ajouté au panier.')
     window.setTimeout(() => setToast(null), 2500)
   }
@@ -162,4 +163,3 @@ export function HomePage() {
     </div>
   )
 }
-

@@ -6,6 +6,8 @@ import { ConfigErrorPage } from './pages/ConfigErrorPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { CategoryPage } from './pages/CategoryPage'
 import { HomePage } from './pages/HomePage'
+import { CartPage } from './pages/CartPage'
+import { CheckoutPage } from './pages/CheckoutPage'
 import { ProductDetailPage } from './pages/ProductDetailPage'
 import { ProductsPage } from './pages/ProductsPage'
 import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage'
@@ -29,6 +31,15 @@ export default function App() {
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/products/:id" element={<ProductDetailPage />} />
         <Route path="/category/:slug" element={<CategoryPage />} />
+        <Route path="/cart" element={<CartPage />} />
+        <Route
+          path="/checkout"
+          element={
+            <PrivateRoute>
+              <CheckoutPage />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/dashboard"
           element={

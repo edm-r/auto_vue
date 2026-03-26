@@ -33,3 +33,23 @@ export function addToCart(item: Omit<CartItem, 'quantity'>, quantity = 1) {
   setCart(cart)
 }
 
+export function setQuantity(productId: number, quantity: number) {
+  const cart = getCart()
+  const existing = cart.find((c) => c.productId === productId)
+  if (!existing) return
+  existing.quantity = Math.max(1, quantity)
+  setCart(cart)
+}
+
+export function removeFromCart(productId: number) {
+  const cart = getCart().filter((c) => c.productId !== productId)
+  setCart(cart)
+}
+
+export function clearCart() {
+  localStorage.removeItem(STORAGE_KEY)
+}
+
+export function upsertCart(items: CartItem[]) {
+  setCart(items)
+}

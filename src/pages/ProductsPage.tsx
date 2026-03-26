@@ -5,13 +5,14 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { AlertMessage } from '../components/AlertMessage'
 import { FilterSidebar } from '../components/FilterSidebar'
 import { ProductCard } from '../components/ProductCard'
-import { addToCart } from '../cart/cartStorage'
+import { useCart } from '../cart/CartContext'
 import type { ProductListItem, ProductSuggestion } from '../lib/catalogApi'
 import { fetchProductSuggestions, fetchProductsPage } from '../lib/catalogApi'
 
 export function ProductsPage() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
+  const { addProduct } = useCart()
 
   const query = useMemo(() => {
     return {
@@ -99,7 +100,7 @@ export function ProductsPage() {
   }
 
   function handleAddToCart(p: ProductListItem) {
-    addToCart({ productId: p.id, name: p.name, price: p.price }, 1)
+    void addProduct({ id: p.id, name: p.name, price: p.price }, 1)
     setToast('Produit ajouté au panier.')
     window.setTimeout(() => setToast(null), 2500)
   }
@@ -158,6 +159,9 @@ export function ProductsPage() {
         <div className="page-actions">
           <Link className="btn" to="/">
             Accueil
+          </Link>
+          <Link className="btn btn-primary" to="/cart">
+            Panier
           </Link>
         </div>
       </div>
@@ -286,4 +290,3 @@ export function ProductsPage() {
     </div>
   )
 }
-
