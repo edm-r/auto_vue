@@ -7,23 +7,33 @@ import {
   getRefreshToken,
   setAccessToken,
 } from '../auth/storage'
+import { getApiBaseUrl } from '../config/apiBaseUrl'
 
-const baseURL = import.meta.env.VITE_API_BASE_URL as string | undefined
-if (!baseURL) {
-  throw new Error(
-    'Missing VITE_API_BASE_URL. Define it in .env (ex: VITE_API_BASE_URL=https://api.example.com/api).',
-  )
+const refreshClient = axios.create()
+export const api = axios.create()
+
+function applyBaseUrl(config: InternalAxiosRequestConfig) {
+  const baseURL = getApiBaseUrl()
+  if (!baseURL) {
+    throw new Error(
+      'API base URL is not configured. Set VITE_API_BASE_URL in .env or provide /runtime-config.js.',
+    )
+  }
+  config.baseURL = baseURL
+  return config
 }
 
-const refreshClient = axios.create({ baseURL })
-export const api = axios.create({ baseURL })
-
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  applyBaseUrl(config)
   const token = getAccessToken()
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
   return config
+})
+
+refreshClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  return applyBaseUrl(config)
 })
 
 let refreshPromise: Promise<string> | null = null

@@ -1,13 +1,19 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
 import { PrivateRoute } from './auth/PrivateRoute'
+import { getApiBaseUrl } from './config/apiBaseUrl'
 import { DashboardPage } from './pages/DashboardPage'
+import { ConfigErrorPage } from './pages/ConfigErrorPage'
 import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage'
 import { LoginPage } from './pages/auth/LoginPage'
 import { RegisterPage } from './pages/auth/RegisterPage'
 import { ResetPasswordPage } from './pages/auth/ResetPasswordPage'
 
 export default function App() {
+  if (!getApiBaseUrl()) {
+    return <ConfigErrorPage />
+  }
+
   return (
     <BrowserRouter>
       <Routes>
