@@ -11,6 +11,7 @@ export function ProductCard({
   onAddToCart: (p: ProductListItem) => void
 }) {
   const imageUrl = resolveAssetUrl(product.primary_image?.image)
+  const inStock = product.is_in_stock ?? (product.stock_quantity ?? 0) > 0
   return (
     <div className="product-card">
       <Link className="product-media" to={`/products/${product.id}`}>
@@ -28,7 +29,9 @@ export function ProductCard({
       <div className="product-body">
         <div className="product-meta">
           <span className="product-brand">{product.brand_name ?? 'Marque'}</span>
-          {product.is_featured ? <span className="product-pill">Vedette</span> : null}
+          <span className={`product-stock ${inStock ? 'is-ok' : 'is-out'}`}>
+            {inStock ? 'En stock' : 'Rupture'}
+          </span>
         </div>
         <Link className="product-name" to={`/products/${product.id}`}>
           {product.name}

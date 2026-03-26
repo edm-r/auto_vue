@@ -7,14 +7,14 @@ export function BrandCarousel({ brands }: { brands: Brand[] }) {
       {brands.map((b) => {
         const logoUrl = resolveAssetUrl(b.logo)
         return (
-        <div className="brand-item" key={b.id} title={b.name}>
-          {logoUrl ? (
-            <img src={logoUrl} alt={b.name} loading="lazy" />
-          ) : (
-            <div className="brand-fallback">{b.name.slice(0, 2).toUpperCase()}</div>
-          )}
-          <div className="brand-name">{b.name}</div>
-        </div>
+          <div className="brand-item" key={b.id} title={b.name}>
+            {logoUrl ? (
+              <img src={logoUrl} alt={b.name} loading="lazy" />
+            ) : (
+              <div className="brand-fallback">{b.name.slice(0, 2).toUpperCase()}</div>
+            )}
+            <div className="brand-name">{b.name}</div>
+          </div>
         )
       })}
     </div>
