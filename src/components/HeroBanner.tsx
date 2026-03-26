@@ -1,11 +1,14 @@
 import { Link } from 'react-router-dom'
 import { SearchBar } from './SearchBar'
+import { useAuth } from '../auth/AuthContext'
 
 export function HeroBanner({
   onSearch,
 }: {
   onSearch: (params: { search?: string; brand?: number; carModel?: number }) => void
 }) {
+  const { user, isAuthenticated } = useAuth()
+  const isAdmin = Boolean(isAuthenticated && (user?.is_staff || user?.is_superuser))
   return (
     <section className="hero">
       <div className="hero-inner">
@@ -25,6 +28,11 @@ export function HeroBanner({
           <Link className="btn" to="/account">
             Mon compte
           </Link>
+          {isAdmin ? (
+            <Link className="btn" to="/admin/dashboard">
+              Admin
+            </Link>
+          ) : null}
         </div>
         <div className="hero-trust">
           <div className="trust-item">Paiement sécurisé</div>

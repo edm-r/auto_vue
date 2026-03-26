@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 
 import { useAuth } from './AuthContext'
 
 export function PrivateRoute({ children }: { children: ReactNode }) {
+  const location = useLocation()
   const { isAuthenticated, isInitializing } = useAuth()
 
   if (isInitializing) {
@@ -11,7 +12,8 @@ export function PrivateRoute({ children }: { children: ReactNode }) {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />
+    const from = `${location.pathname}${location.search}`
+    return <Navigate to="/login" replace state={{ from }} />
   }
 
   return children

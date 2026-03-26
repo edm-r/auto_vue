@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 
 import { AlertMessage } from '../../components/AlertMessage'
 import { AuthLayout } from '../../components/AuthLayout'
@@ -10,7 +10,7 @@ import { useAuth } from '../../auth/AuthContext'
 export function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { login } = useAuth()
+  const { login, isAuthenticated, isInitializing } = useAuth()
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -20,6 +20,10 @@ export function LoginPage() {
   )
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  if (!isInitializing && isAuthenticated) {
+    return <Navigate to="/" replace />
+  }
+
   async function onSubmit(e: FormEvent) {
     e.preventDefault()
     setError(null)
@@ -28,7 +32,7 @@ export function LoginPage() {
     try {
       await login({ username, password })
       const next = (location.state as { from?: string } | null)?.from
-      navigate(next ?? '/dashboard', { replace: true })
+      navigate(next ?? '/', { replace: true })
     } catch (err) {
       setError('Identifiants invalides ou serveur indisponible.')
     } finally {
