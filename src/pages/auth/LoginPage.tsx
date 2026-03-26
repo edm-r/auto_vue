@@ -27,7 +27,8 @@ export function LoginPage() {
     setIsSubmitting(true)
     try {
       await login({ username, password })
-      navigate('/dashboard', { replace: true })
+      const next = (location.state as { from?: string } | null)?.from
+      navigate(next ?? '/dashboard', { replace: true })
     } catch (err) {
       setError('Identifiants invalides ou serveur indisponible.')
     } finally {

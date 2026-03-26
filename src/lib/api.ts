@@ -8,6 +8,7 @@ import {
   setAccessToken,
 } from '../auth/storage'
 import { getApiBaseUrl } from '../config/apiBaseUrl'
+import { getOrCreateSessionId } from '../cart/session'
 
 const refreshClient = axios.create()
 export const api = axios.create()
@@ -20,6 +21,7 @@ function applyBaseUrl(config: InternalAxiosRequestConfig) {
     )
   }
   config.baseURL = baseURL
+  config.headers['X-Session-Id'] = getOrCreateSessionId()
   return config
 }
 

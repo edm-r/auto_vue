@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 
 import { AlertMessage } from '../components/AlertMessage'
 import { ProductCard } from '../components/ProductCard'
-import { addToCart } from '../cart/cartStorage'
+import { useCart } from '../cart/CartContext'
 import type { ProductDetail, ProductListItem } from '../lib/catalogApi'
 import { fetchProduct, fetchProducts } from '../lib/catalogApi'
 import { resolveAssetUrl } from '../lib/assetUrl'
@@ -12,6 +12,7 @@ type TabKey = 'features' | 'compatibility' | 'reviews'
 
 export function ProductDetailPage() {
   const { id } = useParams()
+  const { addProduct } = useCart()
 
   const [product, setProduct] = useState<ProductDetail | null>(null)
   const [loading, setLoading] = useState(true)
@@ -110,7 +111,7 @@ export function ProductDetailPage() {
 
   function handleAdd() {
     if (!product) return
-    addToCart({ productId: product.id, name: product.name, price: product.price }, qty)
+    void addProduct({ id: product.id, name: product.name, price: product.price }, qty)
     setToast('Produit ajouté au panier.')
     window.setTimeout(() => setToast(null), 2500)
   }
@@ -128,6 +129,9 @@ export function ProductDetailPage() {
         <div className="page-actions">
           <Link className="btn" to="/products">
             Retour
+          </Link>
+          <Link className="btn" to="/cart">
+            Panier
           </Link>
           <button className="btn btn-primary" type="button" onClick={handleAdd} disabled={!product}>
             Ajouter
@@ -263,7 +267,11 @@ export function ProductDetailPage() {
               {similarLoading
                 ? Array.from({ length: 4 }).map((_, i) => <div className="skeleton-product" key={i} />)
                 : similar.map((p) => (
-                    <ProductCard key={p.id} product={p} onAddToCart={(x) => addToCart({ productId: x.id, name: x.name, price: x.price }, 1)} />
+                    <ProductCard
+                      key={p.id}
+                      product={p}
+                      onAddToCart={(x) => void addProduct({ id: x.id, name: x.name, price: x.price }, 1)}
+                    />
                   ))}
             </div>
           </section>
