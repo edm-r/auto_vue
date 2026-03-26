@@ -30,6 +30,7 @@ type AuthContextValue = {
     first_name?: string
     last_name?: string
   }) => Promise<void>
+  refreshUser: () => Promise<void>
   logout: () => void
 }
 
@@ -81,6 +82,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       },
       register: async (payload) => {
         await api.post('/auth/register/', payload)
+      },
+      refreshUser: async () => {
+        const stored = getStoredAuth()
+        if (!stored?.tokens?.access) return
+        const res = await api.get('/auth/users/me/')
+        const nextUser = res.data as AuthUser
+        setUser(nextUser)
+        setStoredAuth({ tokens: stored.tokens, user: nextUser })
       },
       logout: () => {
         clearStoredAuth()

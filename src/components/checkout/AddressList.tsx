@@ -5,11 +5,13 @@ export function AddressList({
   selectedId,
   onSelect,
   onEdit,
+  onDelete,
 }: {
   items: Address[]
   selectedId: number | null
   onSelect: (id: number) => void
   onEdit: (address: Address) => void
+  onDelete?: (address: Address) => void
 }) {
   return (
     <div className="addr-list">
@@ -44,6 +46,18 @@ export function AddressList({
             >
               Modifier
             </button>
+            {onDelete ? (
+              <button
+                className="btn"
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onDelete(a)
+                }}
+              >
+                Supprimer
+              </button>
+            ) : null}
           </div>
           <div className="addr-body">
             <div className="addr-muted">{a.phone_number}</div>
@@ -58,4 +72,3 @@ export function AddressList({
     </div>
   )
 }
-

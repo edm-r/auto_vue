@@ -16,6 +16,13 @@ import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage'
 import { LoginPage } from './pages/auth/LoginPage'
 import { RegisterPage } from './pages/auth/RegisterPage'
 import { ResetPasswordPage } from './pages/auth/ResetPasswordPage'
+import { AccountLayoutPage } from './pages/account/AccountLayoutPage'
+import { AccountProfilePage } from './pages/account/AccountProfilePage'
+import { AccountAddressesPage } from './pages/account/AccountAddressesPage'
+import { AccountOrdersPage } from './pages/account/AccountOrdersPage'
+import { AccountOrderDetailPage } from './pages/account/AccountOrderDetailPage'
+import { AccountWishlistPage } from './pages/account/AccountWishlistPage'
+import { AccountVehiclesPage } from './pages/account/AccountVehiclesPage'
 
 export default function App() {
   if (!getApiBaseUrl()) {
@@ -34,6 +41,22 @@ export default function App() {
         <Route path="/products/:id" element={<ProductDetailPage />} />
         <Route path="/category/:slug" element={<CategoryPage />} />
         <Route path="/cart" element={<CartPage />} />
+        <Route
+          path="/account"
+          element={
+            <PrivateRoute>
+              <AccountLayoutPage />
+            </PrivateRoute>
+          }
+        >
+          <Route index element={<Navigate to="profile" replace />} />
+          <Route path="profile" element={<AccountProfilePage />} />
+          <Route path="addresses" element={<AccountAddressesPage />} />
+          <Route path="orders" element={<AccountOrdersPage />} />
+          <Route path="orders/:id" element={<AccountOrderDetailPage />} />
+          <Route path="wishlist" element={<AccountWishlistPage />} />
+          <Route path="vehicles" element={<AccountVehiclesPage />} />
+        </Route>
         <Route
           path="/checkout"
           element={

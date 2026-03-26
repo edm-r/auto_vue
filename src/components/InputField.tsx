@@ -10,6 +10,8 @@ export function InputField({
   error,
   autoComplete,
   required,
+  readOnly,
+  disabled,
 }: {
   label: string
   name: string
@@ -20,6 +22,8 @@ export function InputField({
   error?: string
   autoComplete?: string
   required?: boolean
+  readOnly?: boolean
+  disabled?: boolean
 }) {
   const id = `field_${name}`
 
@@ -38,6 +42,8 @@ export function InputField({
         onChange={onChange}
         placeholder={placeholder}
         autoComplete={autoComplete}
+        readOnly={readOnly}
+        disabled={disabled}
       />
       {error ? <div className="field-error">{error}</div> : null}
     </div>
