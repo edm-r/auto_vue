@@ -27,6 +27,10 @@ export async function updateAddress(id: number, payload: Partial<Omit<Address, '
   return res.data as Address
 }
 
+export async function deleteAddress(id: number): Promise<void> {
+  await api.delete(`/profile/addresses/${id}/`)
+}
+
 export type Order = {
   id: number
   status: string
