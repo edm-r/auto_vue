@@ -2,8 +2,11 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
 import { PrivateRoute } from './auth/PrivateRoute'
 import { getApiBaseUrl } from './config/apiBaseUrl'
-import { DashboardPage } from './pages/DashboardPage'
 import { ConfigErrorPage } from './pages/ConfigErrorPage'
+import { DashboardPage } from './pages/DashboardPage'
+import { HomePage } from './pages/HomePage'
+import { ProductDetailPage } from './pages/ProductDetailPage'
+import { ProductsPage } from './pages/ProductsPage'
 import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage'
 import { LoginPage } from './pages/auth/LoginPage'
 import { RegisterPage } from './pages/auth/RegisterPage'
@@ -17,11 +20,13 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+        <Route path="/products" element={<ProductsPage />} />
+        <Route path="/products/:id" element={<ProductDetailPage />} />
         <Route
           path="/dashboard"
           element={
