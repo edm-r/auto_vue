@@ -1,4 +1,4 @@
-import { AlertCircle, CheckCircle, Info } from 'lucide-react'
+import { CircleAlert as AlertCircle, CircleCheck as CheckCircle, Info } from 'lucide-react'
 import { cn } from '../lib/cn'
 
 export function AlertMessage({
