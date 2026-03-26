@@ -1,35 +1,83 @@
-:root {
-  --bg: #0b1220;
-  --card: rgba(255, 255, 255, 0.06);
-  --border: rgba(255, 255, 255, 0.12);
-  --text: rgba(255, 255, 255, 0.88);
-  --muted: rgba(255, 255, 255, 0.65);
-  --danger: #ff5c7a;
-  --success: #22c55e;
-  --info: #60a5fa;
-  --focus: rgba(96, 165, 250, 0.45);
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  color: var(--text);
-  background: radial-gradient(1000px 500px at 20% -10%, rgba(96, 165, 250, 0.25), transparent),
-    radial-gradient(800px 500px at 100% 0%, rgba(168, 85, 247, 0.22), transparent),
-    var(--bg);
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-neutral-200;
+  }
+
+  body {
+    @apply bg-white text-neutral-900 antialiased;
+    margin: 0;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+
+  a {
+    @apply text-primary-600 no-underline transition-colors hover:text-primary-700;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    @apply ring-2 ring-primary-500 ring-offset-2 outline-none border-primary-500;
+  }
 }
 
-body {
-  margin: 0;
-  min-height: 100vh;
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 whitespace-nowrap;
+  }
+
+  .btn-primary {
+    @apply bg-neutral-900 text-white hover:bg-neutral-800 focus:ring-neutral-900 shadow-sm hover:shadow-md;
+  }
+
+  .btn-secondary {
+    @apply bg-neutral-100 text-neutral-900 hover:bg-neutral-200 focus:ring-neutral-500;
+  }
+
+  .btn-outline {
+    @apply border border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50 focus:ring-neutral-500;
+  }
+
+  .input {
+    @apply w-full px-4 py-2.5 border border-neutral-300 rounded-xl text-neutral-900 placeholder:text-neutral-400 focus:border-primary-500 focus:ring-primary-500 transition-colors bg-white;
+  }
+
+  .card {
+    @apply bg-white border border-neutral-200 rounded-2xl p-6 shadow-soft;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+  }
+
+  .badge-success {
+    @apply bg-emerald-50 text-emerald-700 border border-emerald-200;
+  }
+
+  .badge-error {
+    @apply bg-red-50 text-red-700 border border-red-200;
+  }
+
+  .badge-warning {
+    @apply bg-amber-50 text-amber-700 border border-amber-200;
+  }
+
+  .badge-info {
+    @apply bg-blue-50 text-blue-700 border border-blue-200;
+  }
 }
 
-a {
-  color: var(--info);
-  text-decoration: none;
-}
-a:hover {
-  text-decoration: underline;
+.skeleton {
+  @apply animate-pulse bg-neutral-100 rounded-xl;
 }
 
 .auth-shell {
