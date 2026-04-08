@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
-import { SearchBar } from './SearchBar'
+
 import { useAuth } from '../auth/AuthContext'
+import { SearchBar } from './SearchBar'
 
 export function HeroBanner({
   onSearch,
@@ -9,16 +10,21 @@ export function HeroBanner({
 }) {
   const { user, isAuthenticated } = useAuth()
   const isAdmin = Boolean(isAuthenticated && (user?.is_staff || user?.is_superuser))
+
   return (
     <section className="hero">
       <div className="hero-inner">
         <div className="hero-badge">Pièces auto • Livraison rapide</div>
-        <h1 className="hero-title">Trouve la bonne pièce, du premier coup</h1>
+        <h1 className="hero-title">Trouvez la bonne pièce, du premier coup</h1>
         <p className="hero-subtitle">
           Recherche par référence produit ou par véhicule. Commande en quelques clics.
         </p>
-        <SearchBar onSearch={onSearch} />
-        <div className="actions">
+
+        <div className="hero-search">
+          <SearchBar onSearch={onSearch} />
+        </div>
+
+        <div className="hero-actions">
           <Link className="btn btn-primary" to="/products">
             Catalogue
           </Link>
@@ -34,6 +40,7 @@ export function HeroBanner({
             </Link>
           ) : null}
         </div>
+
         <div className="hero-trust">
           <div className="trust-item">Paiement sécurisé</div>
           <div className="trust-item">Support réactif</div>
@@ -43,3 +50,4 @@ export function HeroBanner({
     </section>
   )
 }
+

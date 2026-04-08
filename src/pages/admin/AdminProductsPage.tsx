@@ -2,16 +2,29 @@ import { useEffect, useMemo, useState } from 'react'
 import { isAxiosError } from 'axios'
 
 import { AlertMessage } from '../../components/AlertMessage'
-import { InputField } from '../../components/InputField'
 import { ConfirmDialog } from '../../admin/components/ConfirmDialog'
 import { DataTable } from '../../admin/components/DataTable'
 import { Modal } from '../../admin/components/Modal'
-import type { AdminProduct, AdminProductUpsert } from '../../admin/adminApi'
-import { createProduct, deleteProduct, fetchAdminProducts, updateProduct } from '../../admin/adminApi'
+import { InputField } from '../../components/InputField'
+import type { AdminCarModel, AdminProduct, AdminProductUpsert } from '../../admin/adminApi'
+import {
+  createProduct,
+  deleteProduct,
+  fetchAdminCarModels,
+  fetchAdminProductDetail,
+  fetchAdminProducts,
+  updateProduct,
+} from '../../admin/adminApi'
 import { fetchBrands, fetchCategories, type Brand, type Category } from '../../lib/catalogApi'
 
 function toBool(v: unknown) {
   return Boolean(v)
+}
+
+function modelLabel(m: AdminCarModel) {
+  const brand = m.brand_detail?.name ? m.brand_detail.name : `#${m.brand}`
+  const years = `${m.year_start}${m.year_end ? `–${m.year_end}` : ''}`
+  return `${brand} • ${m.name} (${years})`
 }
 
 export function AdminProductsPage() {
@@ -27,10 +40,12 @@ export function AdminProductsPage() {
 
   const [categories, setCategories] = useState<Category[]>([])
   const [brands, setBrands] = useState<Brand[]>([])
+  const [carModels, setCarModels] = useState<AdminCarModel[]>([])
 
   const [modalOpen, setModalOpen] = useState(false)
   const [editing, setEditing] = useState<AdminProduct | null>(null)
   const [submitting, setSubmitting] = useState(false)
+  const [detailLoading, setDetailLoading] = useState(false)
 
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [deleting, setDeleting] = useState<AdminProduct | null>(null)
@@ -38,13 +53,19 @@ export function AdminProductsPage() {
   const [form, setForm] = useState<AdminProductUpsert>({
     name: '',
     sku: '',
+    description: '',
     price: '0.00',
+    cost: null,
     stock_quantity: 0,
+    low_stock_alert: 10,
+    weight: null,
+    dimensions: '',
+    warranty_months: 12,
     category: null,
     brand: null,
+    compatible_car_models_ids: [],
     is_active: true,
     is_featured: false,
-    description: '',
   })
 
   useEffect(() => {
@@ -57,6 +78,22 @@ export function AdminProductsPage() {
         setBrands(brs)
       } catch {
         // ignore (product list still works)
+      }
+    })()
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  useEffect(() => {
+    let mounted = true
+    ;(async () => {
+      try {
+        const models = await fetchAdminCarModels()
+        if (!mounted) return
+        setCarModels(models)
+      } catch {
+        // ignore
       }
     })()
     return () => {
@@ -95,7 +132,7 @@ export function AdminProductsPage() {
   const canPrev = Boolean(previous) && page > 1
   const canNext = Boolean(next)
 
-  const modalTitle = editing ? `Modifier #${editing.id}` : 'Nouveau produit'
+  const modalTitle = useMemo(() => (editing ? `Modifier #${editing.id}` : 'Nouveau produit'), [editing])
 
   const categoryOptions = useMemo(
     () => categories.map((c) => ({ id: c.id, name: c.name })),
@@ -108,31 +145,55 @@ export function AdminProductsPage() {
     setForm({
       name: '',
       sku: '',
+      description: '',
       price: '0.00',
+      cost: null,
       stock_quantity: 0,
+      low_stock_alert: 10,
+      weight: null,
+      dimensions: '',
+      warranty_months: 12,
       category: null,
       brand: null,
+      compatible_car_models_ids: [],
       is_active: true,
       is_featured: false,
-      description: '',
     })
     setModalOpen(true)
   }
 
-  function openEdit(p: AdminProduct) {
+  async function openEdit(p: AdminProduct) {
     setEditing(p)
-    setForm({
-      name: p.name ?? '',
-      sku: p.sku ?? '',
-      price: p.price ?? '0.00',
-      stock_quantity: p.stock_quantity ?? 0,
-      category: p.category ?? null,
-      brand: p.brand ?? null,
-      is_active: toBool(p.is_active ?? true),
-      is_featured: toBool(p.is_featured ?? false),
-      description: '',
-    })
     setModalOpen(true)
+    setDetailLoading(true)
+    try {
+      const detail = await fetchAdminProductDetail(p.id)
+      const ids =
+        detail.compatible_car_models_ids ??
+        (detail.compatible_car_models ? detail.compatible_car_models.map((m) => m.id) : [])
+
+      setForm({
+        name: detail.name ?? '',
+        sku: detail.sku ?? '',
+        description: String(detail.description ?? ''),
+        price: String(detail.price ?? '0.00'),
+        cost: detail.cost ?? null,
+        stock_quantity: Number(detail.stock_quantity ?? 0),
+        low_stock_alert: Number(detail.low_stock_alert ?? 10),
+        weight: detail.weight ?? null,
+        dimensions: String(detail.dimensions ?? ''),
+        warranty_months: Number(detail.warranty_months ?? 12),
+        category: detail.category ?? null,
+        brand: detail.brand ?? null,
+        compatible_car_models_ids: ids ?? [],
+        is_active: toBool(detail.is_active ?? true),
+        is_featured: toBool(detail.is_featured ?? false),
+      })
+    } catch {
+      setError('Impossible de charger les détails du produit.')
+    } finally {
+      setDetailLoading(false)
+    }
   }
 
   async function submit() {
@@ -145,10 +206,17 @@ export function AdminProductsPage() {
         ...form,
         name: form.name.trim(),
         sku: form.sku?.trim() || undefined,
+        description: String(form.description ?? '').trim() || undefined,
         price: String(form.price ?? '0.00'),
+        cost: form.cost != null && String(form.cost).trim() ? String(form.cost).trim() : null,
+        weight: form.weight != null && String(form.weight).trim() ? String(form.weight).trim() : null,
+        dimensions: String(form.dimensions ?? '').trim(),
         stock_quantity: Number(form.stock_quantity ?? 0),
+        low_stock_alert: Number(form.low_stock_alert ?? 10),
+        warranty_months: Number(form.warranty_months ?? 12),
         category: form.category ?? null,
         brand: form.brand ?? null,
+        compatible_car_models_ids: form.compatible_car_models_ids ?? [],
         is_active: Boolean(form.is_active),
         is_featured: Boolean(form.is_featured),
       }
@@ -198,16 +266,19 @@ export function AdminProductsPage() {
       {success ? <AlertMessage type="success" message={success} /> : null}
 
       <div className="admin-card">
-        <div className="admin-card-title">Produits</div>
-        <div className="admin-toolbar">
-          <InputField
-            label="Recherche"
-            name="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Nom, SKU…"
-          />
-          <div className="actions" style={{ marginTop: 10 }}>
+        <div className="admin-cardHead">
+          <div>
+            <div className="admin-card-title">Produits</div>
+            <div className="admin-muted">Produit, compatibilité véhicule, prix, stock et options.</div>
+          </div>
+          <div className="admin-cardActions">
+            <input
+              className="admin-search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Recherche: nom, SKU…"
+              aria-label="Recherche produits"
+            />
             <button
               className="btn"
               type="button"
@@ -242,7 +313,7 @@ export function AdminProductsPage() {
                   title: 'Actions',
                   render: (r) => (
                     <div className="admin-actions">
-                      <button className="btn" type="button" onClick={() => openEdit(r)}>
+                      <button className="btn" type="button" onClick={() => void openEdit(r)}>
                         Modifier
                       </button>
                       <button
@@ -261,7 +332,7 @@ export function AdminProductsPage() {
               ]}
             />
 
-            <div className="actions">
+            <div className="admin-pager">
               <button className="btn" type="button" disabled={!canPrev} onClick={() => setPage((p) => Math.max(1, p - 1))}>
                 Précédent
               </button>
@@ -282,60 +353,161 @@ export function AdminProductsPage() {
           setEditing(null)
         }}
       >
-        <div className="admin-form">
-          <InputField label="Nom" name="name" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} />
-          <div className="admin-grid">
-            <InputField label="SKU" name="sku" value={form.sku ?? ''} onChange={(e) => setForm((f) => ({ ...f, sku: e.target.value }))} />
-            <InputField label="Prix" name="price" value={String(form.price ?? '')} onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))} />
-          </div>
-          <div className="admin-grid">
+        {detailLoading ? (
+          <div className="skeleton-detail" />
+        ) : (
+          <div className="admin-form">
             <InputField
-              label="Stock"
-              name="stock_quantity"
-              type="number"
-              value={String(form.stock_quantity ?? 0)}
-              onChange={(e) => setForm((f) => ({ ...f, stock_quantity: Number(e.target.value) }))}
+              label="Nom"
+              name="name"
+              value={form.name}
+              onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
             />
+
             <div className="field">
-              <label className="field-label" htmlFor="field_category">
-                Catégorie
+              <label className="field-label" htmlFor="field_description">
+                Description
+              </label>
+              <textarea
+                id="field_description"
+                className="field-input"
+                rows={4}
+                value={String(form.description ?? '')}
+                onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+              />
+            </div>
+
+            <div className="admin-grid" style={{ gridTemplateColumns: '1fr 1fr' }}>
+              <InputField
+                label="SKU"
+                name="sku"
+                value={form.sku ?? ''}
+                onChange={(e) => setForm((f) => ({ ...f, sku: e.target.value }))}
+              />
+              <InputField
+                label="Prix"
+                name="price"
+                value={String(form.price ?? '')}
+                onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
+              />
+            </div>
+
+            <div className="admin-grid" style={{ gridTemplateColumns: '1fr 1fr' }}>
+              <InputField
+                label="Coût (optionnel)"
+                name="cost"
+                value={String(form.cost ?? '')}
+                onChange={(e) => setForm((f) => ({ ...f, cost: e.target.value }))}
+              />
+              <InputField
+                label="Poids (kg, optionnel)"
+                name="weight"
+                value={String(form.weight ?? '')}
+                onChange={(e) => setForm((f) => ({ ...f, weight: e.target.value }))}
+              />
+            </div>
+
+            <div className="admin-grid" style={{ gridTemplateColumns: '1fr 1fr' }}>
+              <InputField
+                label="Stock"
+                name="stock_quantity"
+                type="number"
+                value={String(form.stock_quantity ?? 0)}
+                onChange={(e) => setForm((f) => ({ ...f, stock_quantity: Number(e.target.value) }))}
+              />
+              <InputField
+                label="Alerte stock bas"
+                name="low_stock_alert"
+                type="number"
+                value={String(form.low_stock_alert ?? 10)}
+                onChange={(e) => setForm((f) => ({ ...f, low_stock_alert: Number(e.target.value) }))}
+              />
+            </div>
+
+            <div className="admin-grid" style={{ gridTemplateColumns: '1fr 1fr' }}>
+              <InputField
+                label="Dimensions"
+                name="dimensions"
+                value={String(form.dimensions ?? '')}
+                onChange={(e) => setForm((f) => ({ ...f, dimensions: e.target.value }))}
+                placeholder="L x l x H"
+              />
+              <InputField
+                label="Garantie (mois)"
+                name="warranty_months"
+                type="number"
+                value={String(form.warranty_months ?? 12)}
+                onChange={(e) => setForm((f) => ({ ...f, warranty_months: Number(e.target.value) }))}
+              />
+            </div>
+
+            <div className="admin-grid" style={{ gridTemplateColumns: '1fr 1fr' }}>
+              <div className="field">
+                <label className="field-label" htmlFor="field_category">
+                  Catégorie
+                </label>
+                <select
+                  id="field_category"
+                  className="field-input"
+                  value={form.category ?? ''}
+                  onChange={(e) => setForm((f) => ({ ...f, category: e.target.value ? Number(e.target.value) : null }))}
+                >
+                  <option value="">—</option>
+                  {categoryOptions.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="field">
+                <label className="field-label" htmlFor="field_brand">
+                  Marque
+                </label>
+                <select
+                  id="field_brand"
+                  className="field-input"
+                  value={form.brand ?? ''}
+                  onChange={(e) => setForm((f) => ({ ...f, brand: e.target.value ? Number(e.target.value) : null }))}
+                >
+                  <option value="">—</option>
+                  {brandOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="field">
+              <label className="field-label" htmlFor="field_compat">
+                Compatibilité véhicules
               </label>
               <select
-                id="field_category"
+                id="field_compat"
                 className="field-input"
-                value={form.category ?? ''}
-                onChange={(e) => setForm((f) => ({ ...f, category: e.target.value ? Number(e.target.value) : null }))}
+                multiple
+                size={6}
+                value={(form.compatible_car_models_ids ?? []).map(String)}
+                onChange={(e) => {
+                  const ids = Array.from(e.target.selectedOptions).map((o) => Number(o.value))
+                  setForm((f) => ({ ...f, compatible_car_models_ids: ids }))
+                }}
               >
-                <option value="">—</option>
-                {categoryOptions.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
+                {carModels.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {modelLabel(m)}
                   </option>
                 ))}
               </select>
+              <div className="admin-muted" style={{ marginTop: 8 }}>
+                Astuce: Ctrl/Cmd pour multi-sélection.
+              </div>
             </div>
-          </div>
-          <div className="admin-grid">
+
             <div className="field">
-              <label className="field-label" htmlFor="field_brand">
-                Marque
-              </label>
-              <select
-                id="field_brand"
-                className="field-input"
-                value={form.brand ?? ''}
-                onChange={(e) => setForm((f) => ({ ...f, brand: e.target.value ? Number(e.target.value) : null }))}
-              >
-                <option value="">—</option>
-                {brandOptions.map((b) => (
-                  <option key={b.id} value={b.id}>
-                    {b.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="field">
-              <label className="field-label">Flags</label>
+              <label className="field-label">Options</label>
               <div className="admin-flags">
                 <label className="admin-flag">
                   <input type="checkbox" checked={Boolean(form.is_active)} onChange={(e) => setForm((f) => ({ ...f, is_active: e.target.checked }))} />
@@ -347,14 +519,14 @@ export function AdminProductsPage() {
                 </label>
               </div>
             </div>
-          </div>
 
-          <div className="actions">
-            <button className="btn btn-primary" type="button" disabled={submitting} onClick={submit}>
-              {submitting ? 'Enregistrement…' : 'Enregistrer'}
-            </button>
+            <div className="actions">
+              <button className="btn btn-primary" type="button" disabled={submitting} onClick={submit}>
+                {submitting ? 'Enregistrement…' : 'Enregistrer'}
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </Modal>
 
       <ConfirmDialog

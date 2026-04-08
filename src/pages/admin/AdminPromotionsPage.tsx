@@ -123,7 +123,8 @@ export function AdminPromotionsPage() {
     } catch (e) {
       const detail =
         isAxiosError(e) && e.response
-          ? (e.response.data as { detail?: string; code?: string[] }).detail ?? (e.response.data as { code?: string[] }).code?.[0]
+          ? (e.response.data as { detail?: string; code?: string[] }).detail ??
+            (e.response.data as { code?: string[] }).code?.[0]
           : null
       setError(detail || 'Impossible de sauvegarder le code promo.')
     } finally {
@@ -146,17 +147,34 @@ export function AdminPromotionsPage() {
     }
   }
 
+  async function quickToggle(promo: PromoCode) {
+    try {
+      setError(null)
+      setSuccess(null)
+      const updated = await updatePromotion(promo.id, { is_active: !promo.is_active })
+      setItems((prev) => prev.map((x) => (x.id === updated.id ? updated : x)))
+      setSuccess(`Code ${updated.code} → ${updated.is_active ? 'actif' : 'inactif'}.`)
+    } catch {
+      setError('Impossible de mettre à jour le statut du code promo.')
+    }
+  }
+
   return (
     <div className="admin-section">
       {error ? <AlertMessage type="error" message={error} /> : null}
       {success ? <AlertMessage type="success" message={success} /> : null}
 
       <div className="admin-card">
-        <div className="admin-card-title">Promotions</div>
-        <div className="actions" style={{ marginTop: 10 }}>
-          <button className="btn btn-primary" type="button" onClick={openCreate}>
-            Créer un code
-          </button>
+        <div className="admin-cardHead">
+          <div>
+            <div className="admin-card-title">Promotions</div>
+            <div className="admin-muted">Codes promo, dates d’expiration et activation.</div>
+          </div>
+          <div className="admin-cardActions">
+            <button className="btn btn-primary" type="button" onClick={openCreate}>
+              Créer un code
+            </button>
+          </div>
         </div>
 
         {loading ? (
@@ -175,6 +193,9 @@ export function AdminPromotionsPage() {
                 title: 'Actions',
                 render: (p) => (
                   <div className="admin-actions">
+                    <button className="btn" type="button" onClick={() => void quickToggle(p)}>
+                      {p.is_active ? 'Désactiver' : 'Activer'}
+                    </button>
                     <button className="btn" type="button" onClick={() => openEdit(p)}>
                       Modifier
                     </button>
@@ -205,12 +226,12 @@ export function AdminPromotionsPage() {
         }}
       >
         <div className="admin-form">
-          <div className="admin-grid">
+          <div className="admin-grid" style={{ gridTemplateColumns: '1.2fr 0.8fr' }}>
             <InputField label="Code" name="code" value={code} onChange={(e) => setCode(e.target.value)} />
             <InputField label="Valeur" name="value" value={value} onChange={(e) => setValue(e.target.value)} />
           </div>
 
-          <div className="admin-grid">
+          <div className="admin-grid" style={{ gridTemplateColumns: '1fr 1fr' }}>
             <div className="field">
               <label className="field-label" htmlFor="field_discount_type">
                 Type
@@ -268,3 +289,4 @@ export function AdminPromotionsPage() {
     </div>
   )
 }
+

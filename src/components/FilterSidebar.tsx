@@ -143,39 +143,42 @@ export function FilterSidebar({
 
       <div className="filter-block">
         <div className="filter-title">Compatibilité véhicule</div>
-        <select
-          className="filter-select"
-          value={selected.vehicle_brand ?? ''}
-          onChange={(e) => {
-            const nextBrand = e.target.value || undefined
-            onChange({
-              vehicle_brand: nextBrand,
-              compatible_car_models: undefined,
-            })
-          }}
-          disabled={loading}
-        >
-          <option value="">Marque</option>
-          {brands.map((b) => (
-            <option key={b.id} value={String(b.id)}>
-              {b.name}
-            </option>
-          ))}
-        </select>
-        <select
-          className="filter-select"
-          value={selected.compatible_car_models ?? ''}
-          onChange={(e) => onChange({ compatible_car_models: e.target.value || undefined })}
-          disabled={!vehicleBrandId || modelsLoading || Boolean(modelsError)}
-          style={{ marginTop: 8 }}
-        >
-          <option value="">Modèle</option>
-          {models.map((m) => (
-            <option key={m.id} value={String(m.id)}>
-              {m.name}
-            </option>
-          ))}
-        </select>
+        <div className="filter-stack">
+          <select
+            className="filter-select"
+            value={selected.vehicle_brand ?? ''}
+            onChange={(e) => {
+              const nextBrand = e.target.value || undefined
+              onChange({
+                vehicle_brand: nextBrand,
+                compatible_car_models: undefined,
+              })
+            }}
+            disabled={loading}
+          >
+            <option value="">Marque</option>
+            {brands.map((b) => (
+              <option key={b.id} value={String(b.id)}>
+                {b.name}
+              </option>
+            ))}
+          </select>
+
+          <select
+            className="filter-select"
+            value={selected.compatible_car_models ?? ''}
+            onChange={(e) => onChange({ compatible_car_models: e.target.value || undefined })}
+            disabled={!vehicleBrandId || modelsLoading || Boolean(modelsError)}
+          >
+            <option value="">Modèle</option>
+            {models.map((m) => (
+              <option key={m.id} value={String(m.id)}>
+                {m.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
         {modelsError ? <div className="sidebar-hint is-error">{modelsError}</div> : null}
       </div>
     </aside>

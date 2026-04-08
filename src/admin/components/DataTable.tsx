@@ -20,26 +20,29 @@ export function DataTable<T>({
   }
 
   return (
-    <div className="admin-table">
-      <div
-        className="admin-tr admin-tr--head"
-        style={{ gridTemplateColumns: `repeat(${columns.length}, minmax(0, 1fr))` }}
-      >
-        {columns.map((c) => (
-          <div key={c.key}>{c.title}</div>
-        ))}
-      </div>
-      {rows.map((row, idx) => (
+    <div className="admin-tableWrap">
+      <div className="admin-table">
         <div
-          key={idx}
-          className="admin-tr"
+          className="admin-tr admin-tr--head"
           style={{ gridTemplateColumns: `repeat(${columns.length}, minmax(0, 1fr))` }}
         >
           {columns.map((c) => (
-            <div key={c.key}>{c.render(row)}</div>
+            <div key={c.key}>{c.title}</div>
           ))}
         </div>
-      ))}
+
+        {rows.map((row, idx) => (
+          <div
+            key={idx}
+            className="admin-tr"
+            style={{ gridTemplateColumns: `repeat(${columns.length}, minmax(0, 1fr))` }}
+          >
+            {columns.map((c) => (
+              <div key={c.key}>{c.render(row)}</div>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
