@@ -48,7 +48,7 @@ export function LoginPage() {
       {success ? <AlertMessage type="success" message={success} /> : null}
       {error ? <AlertMessage type="error" message={error} /> : null}
 
-      <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmit} className="space-y-4">
         <InputField
           label="Nom d'utilisateur"
           name="username"
@@ -67,17 +67,30 @@ export function LoginPage() {
           required
         />
 
-        <div className="actions">
-          <button className="btn btn-primary" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Connexion…' : 'Se connecter'}
-          </button>
-        </div>
+        <button
+          className="w-full btn btn-primary mt-6"
+          type="submit"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Connexion…' : 'Se connecter'}
+        </button>
 
-        <div className="helper">
-          <Link to="/forgot-password">Mot de passe oublié ?</Link>
+        <div className="text-center text-sm text-neutral-600 mt-4">
+          <Link
+            to="/forgot-password"
+            className="text-primary-600 hover:text-primary-700 font-medium"
+          >
+            Mot de passe oublié ?
+          </Link>
         </div>
-        <div className="helper">
-          Pas de compte ? <Link to="/register">Créer un compte</Link>
+        <div className="text-center text-sm text-neutral-600">
+          Pas de compte ?{' '}
+          <Link
+            to="/register"
+            className="text-primary-600 hover:text-primary-700 font-medium"
+          >
+            Créer un compte
+          </Link>
         </div>
       </form>
     </AuthLayout>
