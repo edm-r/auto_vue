@@ -1812,7 +1812,7 @@ html[data-theme='dark'] .trust-item {
   place-items: center;
   font-weight: 900;
   border: 1px solid var(--border);
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--text);
 }
 
 .brand-name {
@@ -1908,7 +1908,7 @@ html[data-theme='dark'] .trust-item {
 
 .detail-desc {
   margin: 12px 0 0;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--text);
   line-height: 1.5;
 }
 
@@ -1927,7 +1927,7 @@ html[data-theme='dark'] .trust-item {
 
 .thumb {
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--card);
   border-radius: 12px;
   padding: 0;
   width: 72px;
@@ -1988,7 +1988,7 @@ html[data-theme='dark'] .trust-item {
 .qty-input {
   width: 90px;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--field-bg);
   color: var(--text);
   border-radius: 12px;
   padding: 10px 10px;
@@ -1998,7 +1998,7 @@ html[data-theme='dark'] .trust-item {
 .tabs {
   margin-top: 18px;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--card);
   border-radius: 16px;
   overflow: hidden;
 }
@@ -2339,7 +2339,7 @@ html[data-theme='dark'] .trust-item {
 
 .cart-item {
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--card);
   border-radius: 16px;
   overflow: hidden;
   display: grid;
@@ -2385,11 +2385,11 @@ html[data-theme='dark'] .trust-item {
 }
 
 .cart-ok {
-  color: rgba(216, 255, 230, 0.9);
+  color: #067d62;
 }
 
 .cart-out {
-  color: rgba(255, 213, 221, 0.9);
+  color: #dc3545;
 }
 
 .cart-item-actions {
@@ -2415,8 +2415,8 @@ html[data-theme='dark'] .trust-item {
 
 .qtysel-btn {
   border: none;
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--text);
+  background: var(--btn-bg);
+  color: var(--btn-text);
   padding: 10px 12px;
   cursor: pointer;
   font-weight: 900;
@@ -2439,7 +2439,7 @@ html[data-theme='dark'] .trust-item {
 
 .cart-card {
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--card);
   border-radius: 16px;
   padding: 12px;
 }
@@ -2458,7 +2458,7 @@ html[data-theme='dark'] .trust-item {
 .promo-input {
   flex: 1;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--field-bg);
   color: var(--text);
   border-radius: 12px;
   padding: 12px 12px;
@@ -2476,7 +2476,7 @@ html[data-theme='dark'] .trust-item {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--text);
 }
 
 .cart-muted {
@@ -2599,7 +2599,7 @@ html[data-theme='dark'] .trust-item {
 
 .addr-card {
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--card);
   border-radius: 16px;
   padding: 12px;
   cursor: pointer;
@@ -2626,7 +2626,7 @@ html[data-theme='dark'] .trust-item {
 
 .addr-body {
   margin-top: 8px;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--text);
   display: grid;
   gap: 4px;
 }
@@ -2686,7 +2686,7 @@ html[data-theme='dark'] .trust-item {
 
 .ship-card {
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--card);
   border-radius: 16px;
   padding: 14px;
   cursor: pointer;
@@ -2724,7 +2724,7 @@ html[data-theme='dark'] .trust-item {
   display: grid;
   grid-template-columns: 1fr auto auto;
   gap: 10px;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--text);
   align-items: baseline;
 }
 
