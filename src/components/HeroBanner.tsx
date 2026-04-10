@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 
-import { useAuth } from '../auth/AuthContext'
 import { SearchBar } from './SearchBar'
 
 export function HeroBanner({
@@ -8,46 +7,35 @@ export function HeroBanner({
 }: {
   onSearch: (params: { search?: string; brand?: number; carModel?: number }) => void
 }) {
-  const { user, isAuthenticated } = useAuth()
-  const isAdmin = Boolean(isAuthenticated && (user?.is_staff || user?.is_superuser))
-
   return (
     <section className="hero">
       <div className="hero-inner">
-        <div className="hero-badge">Pièces auto • Livraison rapide</div>
-        <h1 className="hero-title">Trouvez la bonne pièce, du premier coup</h1>
-        <p className="hero-subtitle">
-          Recherche par référence produit ou par véhicule. Commande en quelques clics.
-        </p>
+        <div className="hero-content">
+          <div className="hero-badge">Pièces automobiles — Livraison rapide</div>
+          <h1 className="hero-title">Trouvez la bonne pièce,<br />du premier coup.</h1>
+          <p className="hero-subtitle">
+            Recherche par référence produit ou par véhicule. Des milliers de pièces disponibles, livrées directement chez vous.
+          </p>
 
-        <div className="hero-search">
-          <SearchBar onSearch={onSearch} />
-        </div>
+          <div className="hero-search">
+            <SearchBar onSearch={onSearch} />
+          </div>
 
-        <div className="hero-actions">
-          <Link className="btn btn-primary" to="/products">
-            Catalogue
-          </Link>
-          <Link className="btn" to="/cart">
-            Panier
-          </Link>
-          <Link className="btn" to="/account">
-            Mon compte
-          </Link>
-          {isAdmin ? (
-            <Link className="btn" to="/admin/dashboard">
-              Admin
+          <div className="hero-actions">
+            <Link className="btn btn-primary" to="/products">
+              Parcourir le catalogue
             </Link>
-          ) : null}
-        </div>
+          </div>
 
-        <div className="hero-trust">
-          <div className="trust-item">Paiement sécurisé</div>
-          <div className="trust-item">Support réactif</div>
-          <div className="trust-item">Retour facile</div>
+          <div className="hero-trust">
+            <span className="trust-item">Paiement sécurisé</span>
+            <span className="trust-item">Support 7j/7</span>
+            <span className="trust-item">Retour sous 30 jours</span>
+          </div>
         </div>
       </div>
     </section>
   )
 }
+
 

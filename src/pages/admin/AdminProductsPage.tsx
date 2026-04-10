@@ -14,6 +14,7 @@ import {
   fetchAdminProductDetail,
   fetchAdminProducts,
   updateProduct,
+  createAdminProductImage,
 } from '../../admin/adminApi'
 import { fetchBrands, fetchCategories, type Brand, type Category } from '../../lib/catalogApi'
 
@@ -49,6 +50,8 @@ export function AdminProductsPage() {
 
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [deleting, setDeleting] = useState<AdminProduct | null>(null)
+
+  const [formImage, setFormImage] = useState<File | null>(null)
 
   const [form, setForm] = useState<AdminProductUpsert>({
     name: '',
@@ -159,6 +162,7 @@ export function AdminProductsPage() {
       is_active: true,
       is_featured: false,
     })
+    setFormImage(null)
     setModalOpen(true)
   }
 
@@ -189,6 +193,7 @@ export function AdminProductsPage() {
         is_active: toBool(detail.is_active ?? true),
         is_featured: toBool(detail.is_featured ?? false),
       })
+      setFormImage(null)
     } catch {
       setError('Impossible de charger les détails du produit.')
     } finally {
@@ -221,16 +226,34 @@ export function AdminProductsPage() {
         is_featured: Boolean(form.is_featured),
       }
 
+      let productId: number
+
       if (editing) {
         await updateProduct(editing.id, payload)
+        productId = editing.id
         setSuccess('Produit mis à jour.')
       } else {
-        await createProduct(payload)
+        const created = await createProduct(payload) as { id: number }
+        productId = created.id
         setSuccess('Produit créé.')
+      }
+
+      if (formImage) {
+        try {
+          await createAdminProductImage({
+            product: productId,
+            image: formImage,
+            is_primary: true,
+          })
+          setSuccess((prev) => (prev ? prev + ' Image jointe.' : 'Image jointe.'))
+        } catch (e) {
+          setError("Le produit a été sauvegardé, mais l'image n'a pas pu être téléchargée.")
+        }
       }
 
       setModalOpen(false)
       setEditing(null)
+      setFormImage(null)
       await load()
     } catch (e) {
       const detail =
@@ -438,6 +461,19 @@ export function AdminProductsPage() {
                 type="number"
                 value={String(form.warranty_months ?? 12)}
                 onChange={(e) => setForm((f) => ({ ...f, warranty_months: Number(e.target.value) }))}
+              />
+            </div>
+
+            <div className="field">
+              <label className="field-label" htmlFor="field_image">
+                Image principale (Optionnelle)
+              </label>
+              <input
+                id="field_image"
+                className="field-input"
+                type="file"
+                accept="image/*"
+                onChange={(e) => setFormImage(e.target.files?.[0] ?? null)}
               />
             </div>
 

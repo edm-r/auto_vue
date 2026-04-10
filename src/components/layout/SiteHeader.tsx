@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 
 import { useAuth } from '../../auth/AuthContext'
 import { useCart } from '../../cart/CartContext'
 import { useTheme } from '../../theme/ThemeContext'
 import { SearchBar } from '../SearchBar'
+import { fetchCategories, type Category } from '../../lib/catalogApi'
 
 function Icon({
   path,
@@ -41,7 +42,7 @@ const ICONS = {
   sun:
     'M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12Zm0-14a1 1 0 0 1 1-1h0a1 1 0 0 1 0 2h0a1 1 0 0 1-1-1Zm0 18a1 1 0 0 1 1-1h0a1 1 0 0 1 0 2h0a1 1 0 0 1-1-1ZM4 13a1 1 0 0 1-1-1h0a1 1 0 0 1 2 0h0a1 1 0 0 1-1 1Zm18 0a1 1 0 0 1-1-1h0a1 1 0 1 1 2 0h0a1 1 0 0 1-1 1ZM5.64 5.64a1 1 0 0 1 1.41 0h0a1 1 0 0 1-1.41 1.41h0a1 1 0 0 1 0-1.41Zm11.31 11.31a1 1 0 0 1 1.41 0h0a1 1 0 1 1-1.41 1.41h0a1 1 0 0 1 0-1.41ZM18.36 5.64a1 1 0 0 1 0 1.41h0a1 1 0 1 1-1.41-1.41h0a1 1 0 0 1 1.41 0ZM7.05 16.95a1 1 0 0 1 0 1.41h0a1 1 0 1 1-1.41-1.41h0a1 1 0 0 1 1.41 0Z',
   moon:
-    'M21 14.5A7.5 7.5 0 0 1 9.5 3a6.5 6.5 0 1 0 11.5 11.5Z',
+    'M10 2c-1.82 0-3.53.5-5 1.35C7.99 5.08 10 8.3 10 12s-2.01 6.92-5 8.65C6.47 21.5 8.18 22 10 22c5.52 0 10-4.48 10-10S15.52 2 10 2z',
 }
 
 export function SiteHeader() {
@@ -51,6 +52,13 @@ export function SiteHeader() {
   const { theme, toggleTheme } = useTheme()
 
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [categories, setCategories] = useState<Category[]>([])
+
+  useEffect(() => {
+    fetchCategories()
+      .then(setCategories)
+      .catch((err) => console.error('Failed to load categories', err))
+  }, [])
 
   const itemCount = useMemo(
     () => (cart?.items ?? []).reduce((acc, it) => acc + (it.quantity ?? 0), 0),
@@ -77,16 +85,6 @@ export function SiteHeader() {
             <span className="site-header__logoText">AutoVue</span>
           </Link>
 
-          <div className="site-header__location">
-            <div className="site-header__locationIcon" aria-hidden="true">
-              <Icon path={ICONS.location} title="Localisation" />
-            </div>
-            <div className="site-header__locationText">
-              <div className="site-header__muted">Livrer à</div>
-              <div className="site-header__strong">Douala</div>
-            </div>
-          </div>
-
           <div className="site-header__search">
             <SearchBar
               onSearch={({ search, brand, carModel }) => {
@@ -111,13 +109,8 @@ export function SiteHeader() {
             </button>
 
             <NavLink className="site-header__navlink" to="/account/profile">
-              <div className="site-header__muted">Bonjour{isAuthenticated ? `, ${user?.username ?? ''}` : ''}</div>
-              <div className="site-header__strong">Compte & Listes</div>
-            </NavLink>
-
-            <NavLink className="site-header__navlink site-header__orders" to="/account/orders">
-              <div className="site-header__muted">Retours</div>
-              <div className="site-header__strong">& Commandes</div>
+              <div className="site-header__muted">{isAuthenticated ? `Bonjour, ${user?.username ?? ''}` : 'Bonjour'}</div>
+              <div className="site-header__strong">Mon compte</div>
             </NavLink>
 
             <Link className="site-header__cart" to="/cart" aria-label="Panier">
@@ -135,23 +128,22 @@ export function SiteHeader() {
         </div>
       </div>
 
+
       <div className="site-header__bottom">
         <div className="site-header__inner site-header__bottomInner">
           <NavLink className="site-header__pill" to="/products">
             Catalogue
           </NavLink>
-          <NavLink className="site-header__pill" to="/category/moteur">
-            Moteur
-          </NavLink>
-          <NavLink className="site-header__pill" to="/category/freins">
-            Freins
-          </NavLink>
-          <NavLink className="site-header__pill" to="/category/electricite">
-            Électricité
-          </NavLink>
-          <NavLink className="site-header__pill" to="/category/carrosserie">
-            Carrosserie
-          </NavLink>
+          {categories.slice(0, 5).map((cat) => (
+            <NavLink
+              key={cat.id}
+              className="site-header__pill"
+              to={cat.slug ? `/category/${cat.slug}` : `/products?category=${cat.id}`}
+            >
+              {cat.name}
+            </NavLink>
+          ))}
+
 
           <div className="site-header__spacer" />
 
