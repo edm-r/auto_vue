@@ -8,7 +8,11 @@ export function FilterSidebar({
   selected,
   onChange,
   onClearAll,
+  isOpen,
+  onClose,
 }: {
+  isOpen?: boolean
+  onClose?: () => void
   selected: {
     category?: string
     brand?: string
@@ -91,13 +95,22 @@ export function FilterSidebar({
   }, [selected])
 
   return (
-    <aside className="sidebar">
-      <div className="sidebar-head">
-        <div className="sidebar-title">Filtres</div>
-        <button className="btn" type="button" onClick={onClearAll} disabled={!hasAnyFilter}>
-          Réinitialiser
-        </button>
-      </div>
+    <aside className={`sidebar ${isOpen ? 'is-open' : ''}`}>
+      <div className="sidebar-backdrop" onClick={onClose} />
+      <div className="sidebar-content">
+        <div className="sidebar-head">
+          <div className="sidebar-title">Filtres</div>
+          <div className="flex gap-2">
+            <button className="btn" type="button" onClick={onClearAll} disabled={!hasAnyFilter}>
+              Reset
+            </button>
+            {onClose && (
+                <button className="btn sidebar-close" type="button" onClick={onClose}>
+                    Fermer
+                </button>
+            )}
+          </div>
+        </div>
 
       {error ? <div className="sidebar-error">{error}</div> : null}
 
@@ -180,6 +193,7 @@ export function FilterSidebar({
         </div>
 
         {modelsError ? <div className="sidebar-hint is-error">{modelsError}</div> : null}
+      </div>
       </div>
     </aside>
   )

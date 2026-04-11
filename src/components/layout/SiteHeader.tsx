@@ -52,6 +52,7 @@ export function SiteHeader() {
   const { theme, toggleTheme } = useTheme()
 
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
   const [categories, setCategories] = useState<Category[]>([])
 
   useEffect(() => {
@@ -98,6 +99,15 @@ export function SiteHeader() {
           </div>
 
           <div className="site-header__actions">
+            <button
+              type="button"
+              className="site-header__themeBtn site-header__mobileSearchBtn"
+              onClick={() => setSearchOpen(true)}
+              aria-label="Rechercher"
+            >
+              <Icon path={ICONS.search} title="Recherche" />
+            </button>
+
             <button
               type="button"
               className="site-header__themeBtn"
@@ -164,6 +174,34 @@ export function SiteHeader() {
           )}
         </div>
       </div>
+
+      {searchOpen && (
+        <div className="site-header__searchOverlay animate-in fade-in duration-300">
+          <div className="site-header__searchOverlayContent">
+            <div className="site-header__searchOverlayHeader">
+              <h3 className="site-header__searchTitle text-lg font-black uppercase tracking-tight">Recherche Avancée</h3>
+              <button 
+                type="button" 
+                className="site-header__iconbtn"
+                onClick={() => setSearchOpen(false)}
+              >
+                <Icon path="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" title="Fermer" />
+              </button>
+            </div>
+            <SearchBar
+                onSearch={({ search, brand, carModel }) => {
+                    setSearchOpen(false)
+                    const params = new URLSearchParams()
+                    if (search) params.set('search', search)
+                    if (brand) params.set('brand', String(brand))
+                    if (carModel) params.set('compatible_car_models', String(carModel))
+                    navigate(`/products?${params.toString()}`)
+                }}
+            />
+          </div>
+          <div className="site-header__searchOverlayBackdrop" onClick={() => setSearchOpen(false)} />
+        </div>
+      )}
 
       {mobileOpen ? (
         <div className="site-header__mobile">
