@@ -13,6 +13,7 @@ export function ProductsPage() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const { addProduct } = useCart()
+  const [filtersOpen, setFiltersOpen] = useState(false)
 
   const query = useMemo(() => {
     return {
@@ -233,10 +234,20 @@ export function ProductsPage() {
             <option value="-price">Prix décroissant</option>
           </select>
         </div>
+
+        <button 
+          type="button" 
+          className="catalog-filter-btn"
+          onClick={() => setFiltersOpen(true)}
+        >
+          Filtrer
+        </button>
       </div>
 
       <div className="catalog-layout">
         <FilterSidebar
+          isOpen={filtersOpen}
+          onClose={() => setFiltersOpen(false)}
           selected={{
             category: query.category,
             brand: query.brand,
