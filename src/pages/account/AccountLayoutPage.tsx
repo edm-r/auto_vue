@@ -8,6 +8,7 @@ function navClass({ isActive }: { isActive: boolean }) {
 
 export function AccountLayoutPage() {
   const { user, logout } = useAuth()
+  const isAdmin = Boolean(user?.is_staff || user?.is_superuser)
 
   return (
     <div className="page">
@@ -22,6 +23,11 @@ export function AccountLayoutPage() {
           <a className="btn" href="/">
             Accueil
           </a>
+          {isAdmin ? (
+            <a className="btn" href="/admin/dashboard">
+              Admin
+            </a>
+          ) : null}
           <button
             className="btn btn-primary"
             type="button"
@@ -61,4 +67,3 @@ export function AccountLayoutPage() {
     </div>
   )
 }
-

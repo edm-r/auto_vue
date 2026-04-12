@@ -8,7 +8,11 @@ export function FilterSidebar({
   selected,
   onChange,
   onClearAll,
+  isOpen,
+  onClose,
 }: {
+  isOpen?: boolean
+  onClose?: () => void
   selected: {
     category?: string
     brand?: string
@@ -91,13 +95,22 @@ export function FilterSidebar({
   }, [selected])
 
   return (
-    <aside className="sidebar">
-      <div className="sidebar-head">
-        <div className="sidebar-title">Filtres</div>
-        <button className="btn" type="button" onClick={onClearAll} disabled={!hasAnyFilter}>
-          Réinitialiser
-        </button>
-      </div>
+    <aside className={`sidebar ${isOpen ? 'is-open' : ''}`}>
+      <div className="sidebar-backdrop" onClick={onClose} />
+      <div className="sidebar-content">
+        <div className="sidebar-head">
+          <div className="sidebar-title">Filtres</div>
+          <div className="flex gap-2">
+            <button className="btn" type="button" onClick={onClearAll} disabled={!hasAnyFilter}>
+              Reset
+            </button>
+            {onClose && (
+                <button className="btn sidebar-close" type="button" onClick={onClose}>
+                    Fermer
+                </button>
+            )}
+          </div>
+        </div>
 
       {error ? <div className="sidebar-error">{error}</div> : null}
 
@@ -143,40 +156,44 @@ export function FilterSidebar({
 
       <div className="filter-block">
         <div className="filter-title">Compatibilité véhicule</div>
-        <select
-          className="filter-select"
-          value={selected.vehicle_brand ?? ''}
-          onChange={(e) => {
-            const nextBrand = e.target.value || undefined
-            onChange({
-              vehicle_brand: nextBrand,
-              compatible_car_models: undefined,
-            })
-          }}
-          disabled={loading}
-        >
-          <option value="">Marque</option>
-          {brands.map((b) => (
-            <option key={b.id} value={String(b.id)}>
-              {b.name}
-            </option>
-          ))}
-        </select>
-        <select
-          className="filter-select"
-          value={selected.compatible_car_models ?? ''}
-          onChange={(e) => onChange({ compatible_car_models: e.target.value || undefined })}
-          disabled={!vehicleBrandId || modelsLoading || Boolean(modelsError)}
-          style={{ marginTop: 8 }}
-        >
-          <option value="">Modèle</option>
-          {models.map((m) => (
-            <option key={m.id} value={String(m.id)}>
-              {m.name}
-            </option>
-          ))}
-        </select>
+        <div className="filter-stack">
+          <select
+            className="filter-select"
+            value={selected.vehicle_brand ?? ''}
+            onChange={(e) => {
+              const nextBrand = e.target.value || undefined
+              onChange({
+                vehicle_brand: nextBrand,
+                compatible_car_models: undefined,
+              })
+            }}
+            disabled={loading}
+          >
+            <option value="">Marque</option>
+            {brands.map((b) => (
+              <option key={b.id} value={String(b.id)}>
+                {b.name}
+              </option>
+            ))}
+          </select>
+
+          <select
+            className="filter-select"
+            value={selected.compatible_car_models ?? ''}
+            onChange={(e) => onChange({ compatible_car_models: e.target.value || undefined })}
+            disabled={!vehicleBrandId || modelsLoading || Boolean(modelsError)}
+          >
+            <option value="">Modèle</option>
+            {models.map((m) => (
+              <option key={m.id} value={String(m.id)}>
+                {m.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
         {modelsError ? <div className="sidebar-hint is-error">{modelsError}</div> : null}
+      </div>
       </div>
     </aside>
   )

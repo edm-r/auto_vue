@@ -13,6 +13,7 @@ export function ProductsPage() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const { addProduct } = useCart()
+  const [filtersOpen, setFiltersOpen] = useState(false)
 
   const query = useMemo(() => {
     return {
@@ -193,7 +194,9 @@ export function ProductsPage() {
           </button>
           {suggestOpen ? (
             <div className="suggestions">
-              {suggestLoading ? <div className="suggestion-item">Chargement…</div> : null}
+              {suggestLoading ? (
+                <div className="suggestion-item">Chargement…</div>
+              ) : null}
               {!suggestLoading && suggestions.length ? (
                 suggestions.map((s) => (
                   <button
@@ -231,10 +234,20 @@ export function ProductsPage() {
             <option value="-price">Prix décroissant</option>
           </select>
         </div>
+
+        <button 
+          type="button" 
+          className="catalog-filter-btn"
+          onClick={() => setFiltersOpen(true)}
+        >
+          Filtrer
+        </button>
       </div>
 
       <div className="catalog-layout">
         <FilterSidebar
+          isOpen={filtersOpen}
+          onClose={() => setFiltersOpen(false)}
           selected={{
             category: query.category,
             brand: query.brand,
@@ -250,7 +263,9 @@ export function ProductsPage() {
         <div className="catalog-content">
           <div className="product-grid" aria-busy={loading}>
             {loading
-              ? Array.from({ length: 8 }).map((_, i) => <div className="skeleton-product" key={i} />)
+              ? Array.from({ length: 8 }).map((_, i) => (
+                  <div className="skeleton-product" key={i} />
+                ))
               : items.map((p) => (
                   <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} />
                 ))}
@@ -290,3 +305,4 @@ export function ProductsPage() {
     </div>
   )
 }
+
