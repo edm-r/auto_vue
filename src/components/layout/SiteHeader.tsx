@@ -6,6 +6,7 @@ import { useCart } from '../../cart/CartContext'
 import { useTheme } from '../../theme/ThemeContext'
 import { SearchBar } from '../SearchBar'
 import { fetchCategories, type Category } from '../../lib/catalogApi'
+import logoImg from '../../assets/Logo.png'
 
 function Icon({
   path,
@@ -82,8 +83,7 @@ export function SiteHeader() {
           </button>
 
           <Link to="/" className="site-header__logo" aria-label="AutoVue - Accueil">
-            <span className="site-header__logoMark">AV</span>
-            <span className="site-header__logoText">AutoVue</span>
+            <img src={logoImg} alt="AutoVue Logo" className="site-header__logoImage" />
           </Link>
 
           <div className="site-header__search">
@@ -99,15 +99,6 @@ export function SiteHeader() {
           </div>
 
           <div className="site-header__actions">
-            <button
-              type="button"
-              className="site-header__themeBtn site-header__mobileSearchBtn"
-              onClick={() => setSearchOpen(true)}
-              aria-label="Rechercher"
-            >
-              <Icon path={ICONS.search} title="Recherche" />
-            </button>
-
             <button
               type="button"
               className="site-header__themeBtn"
