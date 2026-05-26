@@ -12,6 +12,9 @@ export function ProductCard({
 }) {
   const imageUrl = resolveAssetUrl(product.primary_image?.image)
   const inStock = product.is_in_stock ?? (product.stock_quantity ?? 0) > 0
+  const priceInUSD = (Number(product.price) / 650).toFixed(2)
+  const formattedPrice = Number(priceInUSD).toLocaleString('en-US')
+
   return (
     <div className="product-card">
       <Link className="product-media" to={`/products/${product.id}`}>
@@ -22,13 +25,15 @@ export function ProductCard({
             loading="lazy"
           />
         ) : (
-          <div className="product-media-fallback">Aucune image</div>
+          <div className="product-media-fallback">Pas d'image</div>
         )}
       </Link>
 
       <div className="product-body">
         <div className="product-meta">
-          <span className="product-brand">{product.brand_name ?? 'Marque'}</span>
+          {product.brand_name ? (
+            <span className="product-brand">{product.brand_name}</span>
+          ) : null}
           <span className={`product-stock ${inStock ? 'is-ok' : 'is-out'}`}>
             {inStock ? 'En stock' : 'Rupture'}
           </span>
@@ -37,12 +42,13 @@ export function ProductCard({
           {product.name}
         </Link>
         <div className="product-footer">
-          <div className="product-price">{product.price} FCFA</div>
-          <button className="btn" type="button" onClick={() => onAddToCart(product)}>
-            Ajouter
+          <div className="product-price">${formattedPrice}</div>
+          <button className="btn btn-sm" type="button" onClick={() => onAddToCart(product)}>
+            + Panier
           </button>
         </div>
       </div>
     </div>
   )
 }
+

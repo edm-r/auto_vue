@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 
 import { AlertMessage } from '../components/AlertMessage'
 import { BrandCarousel } from '../components/BrandCarousel'
@@ -24,7 +23,6 @@ function normalizeName(value: string) {
 }
 
 export function HomePage() {
-  const navigate = useNavigate()
   const { addProduct } = useCart()
 
   const [toast, setToast] = useState<string | null>(null)
@@ -90,15 +88,7 @@ export function HomePage() {
 
   return (
     <div className="home">
-      <HeroBanner
-        onSearch={({ search, brand, carModel }) => {
-          const params = new URLSearchParams()
-          if (search) params.set('search', search)
-          if (brand) params.set('brand', String(brand))
-          if (carModel) params.set('compatible_car_models', String(carModel))
-          navigate(`/products?${params.toString()}`)
-        }}
-      />
+      <HeroBanner />
 
       <div className="home-container">
         {toast ? <AlertMessage type="success" message={toast} /> : null}
@@ -108,26 +98,15 @@ export function HomePage() {
 
         <section className="section">
           <div className="section-head">
-            <h2 className="section-title">Catégories populaires</h2>
-            <div className="section-subtitle">Les indispensables, au meilleur prix.</div>
+            <h2 className="section-title">Marques populaires</h2>
+            <div className="section-subtitle">Retrouvez les meilleurs équipementiers.</div>
           </div>
 
-          <div className="category-grid" aria-busy={loading}>
-            {loading
-              ? Array.from({ length: 4 }).map((_, i) => (
-                  <div className="skeleton-card" key={i} />
-                ))
-              : popularCategories.map((c) =>
-                  c.id ? (
-                    <CategoryCard key={c.id} category={c} />
-                  ) : (
-                    <div key={c.name} className="category-card is-disabled">
-                      <div className="category-title">{c.name}</div>
-                      <div className="category-desc">{c.description}</div>
-                    </div>
-                  ),
-                )}
-          </div>
+          {loading ? (
+            <div className="skeleton-strip" />
+          ) : (
+            <BrandCarousel brands={brands.slice(0, 16)} />
+          )}
         </section>
 
         <section className="section">
@@ -149,15 +128,26 @@ export function HomePage() {
 
         <section className="section">
           <div className="section-head">
-            <h2 className="section-title">Marques partenaires</h2>
-            <div className="section-subtitle">Les fournisseurs que tu connais.</div>
+            <h2 className="section-title">Catégories</h2>
+            <div className="section-subtitle">Explorez les pièces par système.</div>
           </div>
 
-          {loading ? (
-            <div className="skeleton-strip" />
-          ) : (
-            <BrandCarousel brands={brands.slice(0, 16)} />
-          )}
+          <div className="category-grid" aria-busy={loading}>
+            {loading
+              ? Array.from({ length: 4 }).map((_, i) => (
+                  <div className="skeleton-card" key={i} />
+                ))
+              : popularCategories.map((c) =>
+                  c.id ? (
+                    <CategoryCard key={c.id} category={c} />
+                  ) : (
+                    <div key={c.name} className="category-card is-disabled">
+                      <div className="category-title">{c.name}</div>
+                      <div className="category-desc">{c.description}</div>
+                    </div>
+                  ),
+                )}
+          </div>
         </section>
       </div>
     </div>

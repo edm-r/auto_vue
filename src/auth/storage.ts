@@ -9,6 +9,8 @@ export type AuthUser = {
   email?: string
   first_name?: string
   last_name?: string
+  is_staff?: boolean
+  is_superuser?: boolean
 }
 
 type StoredAuth = {
@@ -49,4 +51,3 @@ export function setAccessToken(access: string) {
   if (!current) return
   setStoredAuth({ ...current, tokens: { ...current.tokens, access } })
 }
-

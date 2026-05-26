@@ -171,7 +171,7 @@ export function ProductDetailPage() {
             </div>
 
             <div className="detail-body">
-              <div className="detail-price">{product.price} FCFA</div>
+              <div className="detail-price">${(Number(product.price) / 650).toFixed(2)}</div>
               <div className={`detail-stock-badge ${inStock ? 'is-ok' : 'is-out'}`}>
                 {inStock ? (lowStock ? 'Stock faible' : 'En stock') : 'Rupture de stock'}
               </div>

@@ -10,10 +10,6 @@ const methods: Array<{
   { key: 'express', label: 'Express', price: 6000, eta: '24–48h' },
 ]
 
-function fmt(n: number) {
-  return new Intl.NumberFormat('fr-FR').format(Math.round(n))
-}
-
 export function ShippingMethodSelector({
   value,
   onChange,
@@ -32,7 +28,7 @@ export function ShippingMethodSelector({
         >
           <div className="ship-title">{m.label}</div>
           <div className="ship-meta">
-            <span>{fmt(m.price)} FCFA</span>
+            <span>${(Number(m.price) / 650).toFixed(2)}</span>
             <span>{m.eta}</span>
           </div>
         </button>
