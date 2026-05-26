@@ -210,7 +210,7 @@ export function ProductsPage() {
                     <div className="suggestion-name">{s.name}</div>
                     <div className="suggestion-meta">
                       {s.sku ? <span>SKU: {s.sku}</span> : null}
-                      {s.price ? <span>{s.price} FCFA</span> : null}
+                      {s.price ? <span>${(Number(s.price) / 650).toFixed(2)}</span> : null}
                     </div>
                   </button>
                 ))

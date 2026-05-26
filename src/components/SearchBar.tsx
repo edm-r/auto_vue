@@ -123,22 +123,46 @@ export function SearchBar({
   return (
     <div className="searchbar">
       <form className="searchbar-form" onSubmit={submit}>
-        <select
-          className="searchbar-mode"
-          value={mode}
-          onChange={(e) => setMode(e.target.value as Mode)}
-          aria-label="Type de recherche"
-        >
-          <option value="reference">Référence</option>
-          <option value="vehicle">Véhicule</option>
-        </select>
+        <div className="searchbar-modes">
+          <label className="searchbar-mode-label">
+            <input
+              type="radio"
+              name="search-mode"
+              value="reference"
+              checked={mode === 'reference'}
+              onChange={(e) => {
+                setMode(e.target.value as Mode)
+                setSearch('')
+              }}
+              style={{ display: 'none' }}
+            />
+            <span className={`searchbar-mode-btn ${mode === 'reference' ? 'is-active' : ''}`}>
+              Par référence
+            </span>
+          </label>
+          <label className="searchbar-mode-label">
+            <input
+              type="radio"
+              name="search-mode"
+              value="vehicle"
+              checked={mode === 'vehicle'}
+              onChange={(e) => setMode(e.target.value as Mode)}
+              style={{ display: 'none' }}
+            />
+            <span className={`searchbar-mode-btn ${mode === 'vehicle' ? 'is-active' : ''}`}>
+              Par véhicule
+            </span>
+          </label>
+        </div>
 
         {mode === 'reference' ? (
           <input
             className="searchbar-input"
-            placeholder="Ex: 9812345, filtre à huile, plaquettes..."
+            placeholder="Recherchez une pièce, marque, modèle... (ex: filtre à huile, 9812345)"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            autoComplete="off"
+            aria-label="Recherche par référence"
           />
         ) : (
           <>
@@ -149,8 +173,9 @@ export function SearchBar({
                 setBrandId(e.target.value ? Number(e.target.value) : null)
               }
               disabled={vehicleDisabled}
+              aria-label="Sélectionnez une marque"
             >
-              <option value="">Marque</option>
+              <option value="">— Marque —</option>
               {brands.map((b) => (
                 <option key={b.id} value={b.id}>
                   {b.name}
@@ -164,8 +189,9 @@ export function SearchBar({
                 setModelId(e.target.value ? Number(e.target.value) : null)
               }
               disabled={!brandId || modelsLoading || Boolean(modelsError)}
+              aria-label="Sélectionnez un modèle"
             >
-              <option value="">Modèle</option>
+              <option value="">— Modèle —</option>
               {models.map((m) => (
                 <option key={m.id} value={m.id}>
                   {m.name}
@@ -179,13 +205,17 @@ export function SearchBar({
           className="searchbar-submit"
           type="submit"
           disabled={mode === 'vehicle' && !brandId}
+          aria-label={mode === 'reference' ? 'Rechercher des pièces' : 'Chercher les pièces compatibles'}
         >
           Rechercher
         </button>
       </form>
 
-      {brandsError ? <div className="searchbar-hint is-error">{brandsError}</div> : null}
-      {modelsError ? <div className="searchbar-hint is-error">{modelsError}</div> : null}
+      {brandsError ? <div className="searchbar-hint is-error">Erreur: {brandsError}</div> : null}
+      {modelsError ? <div className="searchbar-hint is-error">Erreur: {modelsError}</div> : null}
+      {mode === 'reference' && search && (
+        <div className="searchbar-hint">Résultats pour: <strong>{search}</strong></div>
+      )}
     </div>
   )
 }

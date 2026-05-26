@@ -1,12 +1,6 @@
 import { Link } from 'react-router-dom'
 
-import { SearchBar } from './SearchBar'
-
-export function HeroBanner({
-  onSearch,
-}: {
-  onSearch: (params: { search?: string; brand?: number; carModel?: number }) => void
-}) {
+export function HeroBanner() {
   return (
     <section className="hero">
       <div className="hero-inner">
@@ -16,10 +10,6 @@ export function HeroBanner({
           <p className="hero-subtitle">
             Recherche par référence produit ou par véhicule. Des milliers de pièces disponibles, livrées directement chez vous.
           </p>
-
-          <div className="hero-search">
-            <SearchBar onSearch={onSearch} />
-          </div>
 
           <div className="hero-actions">
             <Link className="btn btn-primary" to="/products">

@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 
 import { AlertMessage } from '../components/AlertMessage'
 import { BrandCarousel } from '../components/BrandCarousel'
@@ -24,7 +23,6 @@ function normalizeName(value: string) {
 }
 
 export function HomePage() {
-  const navigate = useNavigate()
   const { addProduct } = useCart()
 
   const [toast, setToast] = useState<string | null>(null)
@@ -90,15 +88,7 @@ export function HomePage() {
 
   return (
     <div className="home">
-      <HeroBanner
-        onSearch={({ search, brand, carModel }) => {
-          const params = new URLSearchParams()
-          if (search) params.set('search', search)
-          if (brand) params.set('brand', String(brand))
-          if (carModel) params.set('compatible_car_models', String(carModel))
-          navigate(`/products?${params.toString()}`)
-        }}
-      />
+      <HeroBanner />
 
       <div className="home-container">
         {toast ? <AlertMessage type="success" message={toast} /> : null}

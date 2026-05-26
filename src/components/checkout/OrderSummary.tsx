@@ -8,10 +8,6 @@ function toNumber(value: string | undefined) {
   return Number.isFinite(n) ? n : 0
 }
 
-function fmt(n: number) {
-  return new Intl.NumberFormat('fr-FR').format(Math.round(n))
-}
-
 export function OrderSummary({
   shippingCost,
 }: {
@@ -34,7 +30,7 @@ export function OrderSummary({
               {i.product_name}
             </Link>
             <div className="summary-qty">x{i.quantity}</div>
-            <div className="summary-price">{fmt(toNumber(i.total_price))} FCFA</div>
+            <div className="summary-price">${(toNumber(i.total_price) / 650).toFixed(2)}</div>
           </div>
         ))}
       </div>
@@ -42,16 +38,16 @@ export function OrderSummary({
       <div className="summary-totals">
         <div className="cart-row">
           <span>Sous-total</span>
-          <strong>{fmt(subtotal)} FCFA</strong>
+          <strong>${(subtotal / 650).toFixed(2)}</strong>
         </div>
         <div className="cart-row">
           <span>Livraison</span>
-          <strong>{items.length ? fmt(shippingCost) : '0'} FCFA</strong>
+          <strong>{items.length ? `$${(shippingCost / 650).toFixed(2)}` : '$0.00'}</strong>
         </div>
         <div className="cart-divider" />
         <div className="cart-row">
           <span>Total</span>
-          <strong>{fmt(total)} FCFA</strong>
+          <strong>${(total / 650).toFixed(2)}</strong>
         </div>
       </div>
     </div>
