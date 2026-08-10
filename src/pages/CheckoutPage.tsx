@@ -42,7 +42,7 @@ export function CheckoutPage() {
   const [shippingMethod, setShippingMethod] = useState<ShippingMethod | null>(null)
   const [shippingCost, setShippingCost] = useState(0)
 
-  // Step 3: payment
+  // Step 3: paymen
   const [paying, setPaying] = useState(false)
 
   useEffect(() => {
