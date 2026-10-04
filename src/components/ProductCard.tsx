@@ -12,7 +12,8 @@ export function ProductCard({
 }) {
   const imageUrl = resolveAssetUrl(product.primary_image?.image)
   const inStock = product.is_in_stock ?? (product.stock_quantity ?? 0) > 0
-  const formattedPrice = Number(product.price).toLocaleString('fr-FR')
+  const priceInUSD = (Number(product.price) / 650).toFixed(2)
+  const formattedPrice = Number(priceInUSD).toLocaleString('en-US')
 
   return (
     <div className="product-card">
@@ -41,7 +42,7 @@ export function ProductCard({
           {product.name}
         </Link>
         <div className="product-footer">
-          <div className="product-price">{formattedPrice} FCFA</div>
+          <div className="product-price">${formattedPrice}</div>
           <button className="btn btn-sm" type="button" onClick={() => onAddToCart(product)}>
             + Panier
           </button>

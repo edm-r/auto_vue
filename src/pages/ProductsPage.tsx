@@ -13,6 +13,7 @@ export function ProductsPage() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const { addProduct } = useCart()
+  const [filtersOpen, setFiltersOpen] = useState(false)
 
   const query = useMemo(() => {
     return {
@@ -209,7 +210,7 @@ export function ProductsPage() {
                     <div className="suggestion-name">{s.name}</div>
                     <div className="suggestion-meta">
                       {s.sku ? <span>SKU: {s.sku}</span> : null}
-                      {s.price ? <span>{s.price} FCFA</span> : null}
+                      {s.price ? <span>${(Number(s.price) / 650).toFixed(2)}</span> : null}
                     </div>
                   </button>
                 ))
@@ -233,10 +234,20 @@ export function ProductsPage() {
             <option value="-price">Prix décroissant</option>
           </select>
         </div>
+
+        <button 
+          type="button" 
+          className="catalog-filter-btn"
+          onClick={() => setFiltersOpen(true)}
+        >
+          Filtrer
+        </button>
       </div>
 
       <div className="catalog-layout">
         <FilterSidebar
+          isOpen={filtersOpen}
+          onClose={() => setFiltersOpen(false)}
           selected={{
             category: query.category,
             brand: query.brand,
